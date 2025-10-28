@@ -3,7 +3,7 @@
   <view class="header">
     <view class="user-info">
       <image class="avatar" src="{{userAvatar || '/images/avatar-placeholder.svg'}}"></image>
-      <text class="welcome">欢迎，{{username || '用户'}}</text>
+      <text class="welcome">欢迎，{{username || '微信用户'}}</text>
     </view>
     <button class="logout-btn" bindtap="onLogout">退出登录</button>
   </view>

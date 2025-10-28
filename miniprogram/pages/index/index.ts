@@ -28,17 +28,23 @@ Component({
       }
       
       // 更新用户信息
-      if (userInfo) {
+      if (userInfo && userInfo.nickName) {
         this.setData({
-          username: userInfo.nickName || '',
+          username: userInfo.nickName,
           userAvatar: userInfo.avatarUrl || ''
         });
+        console.log('从userInfo设置微信昵称:', userInfo.nickName);
       } else {
-        // 如果没有完整的用户信息，只显示用户名
+        // 如果没有完整的用户信息，尝试从单独存储的username获取
         const username = wx.getStorageSync('username');
-        this.setData({
-          username: username || ''
-        });
+        if (username) {
+          this.setData({
+            username: username
+          });
+          console.log('从单独存储获取微信昵称:', username);
+        } else {
+          console.log('未获取到微信昵称');
+        }
       }
     },
     
