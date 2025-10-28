@@ -42,41 +42,64 @@ Page({
 
     // 获取微信用户信息
     const userInfo = e.detail.userInfo;
+    console.log('获取到的用户信息:', userInfo);
     
-    // 模拟登录请求
-    setTimeout(() => {
-      // 在实际应用中，这里应该调用真实的登录API，将用户信息发送到后端
-      // 模拟登录成功，生成token
-      const mockToken = 'wechat_token_' + Date.now();
-      
-      // 保存登录状态到本地存储
-      wx.setStorageSync('userToken', mockToken);
-      wx.setStorageSync('userInfo', userInfo);
-      wx.setStorageSync('username', userInfo.nickName);
-      
-      this.setData({ loading: false });
-      
-      wx.showToast({
-        title: '登录成功',
-        icon: 'success'
-      });
+    // 调用后端登录接口
+    wx.request({
+      url: 'http://localhost:3000/api/wechat/login',
+      method: 'POST',
+      data: {
+        code: getApp().globalData.code,
+        userInfo: userInfo
+      },
+      success: (res) => {
+        const data: any = res.data;
+        if (res.statusCode === 200 && data && data.token) {
+          
+          // 保存登录状态到本地存储
+          wx.setStorageSync('userToken', data.token);
+          wx.setStorageSync('userInfo', userInfo);
+          wx.setStorageSync('username', userInfo.nickName);
+          
+          this.setData({ loading: false });
+          
+          wx.showToast({
+            title: '登录成功',
+            icon: 'success'
+          });
 
-      // 登录成功后跳转到首页
-      setTimeout(() => {
-        wx.redirectTo({
-          url: '/pages/index/index',
-          success: () => {
-            console.log('登录成功，跳转首页');
-          },
-          fail: (err) => {
-            console.error('跳转失败:', err);
-            wx.showToast({
-              title: '跳转失败，请重试',
-              icon: 'none'
+          // 登录成功后跳转到首页
+          setTimeout(() => {
+            wx.redirectTo({
+              url: '/pages/index/index',
+              success: () => {
+                console.log('登录成功，跳转首页');
+              },
+              fail: (err) => {
+                console.error('跳转失败:', err);
+                wx.showToast({
+                  title: '跳转失败，请重试',
+                  icon: 'none'
+                });
+              }
             });
-          }
+          }, 1500);
+        } else {
+          this.setData({ loading: false });
+          wx.showToast({
+            title: '登录失败，请重试',
+            icon: 'none'
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('登录请求失败:', err);
+        this.setData({ loading: false });
+        wx.showToast({
+          title: '网络错误，请重试',
+          icon: 'none'
         });
-      }, 1500);
-    }, 1500);
+      }
+    });
   }
 });
