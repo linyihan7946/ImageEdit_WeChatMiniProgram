@@ -1,0 +1,47 @@
+<!-- register.wxml -->
+<view class="container">
+  <view class="header">
+    <text class="title">创建账号</text>
+    <text class="subtitle">注册后即可使用手绘变彩图</text>
+  </view>
+  
+  <view class="form">
+    <view class="input-group">
+      <text class="label">用户名</text>
+      <input 
+        class="input" 
+        placeholder="请设置用户名" 
+        value="{{username}}" 
+        bindinput="onUsernameInput"
+      />
+    </view>
+    
+    <view class="input-group">
+      <text class="label">密码</text>
+      <input 
+        class="input" 
+        placeholder="请设置密码" 
+        password="{{true}}" 
+        value="{{password}}" 
+        bindinput="onPasswordInput"
+      />
+    </view>
+    
+    <view class="input-group">
+      <text class="label">确认密码</text>
+      <input 
+        class="input" 
+        placeholder="请再次输入密码" 
+        password="{{true}}" 
+        value="{{confirmPassword}}" 
+        bindinput="onConfirmPasswordInput"
+      />
+    </view>
+    
+    <button class="register-btn" bindtap="onRegister" loading="{{loading}}">注册</button>
+    
+    <view class="footer">
+      <text class="login-text" bindtap="goToLogin">已有账号？返回登录</text>
+    </view>
+  </view>
+</view>

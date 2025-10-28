@@ -1,5 +1,12 @@
 <!--index.wxml-->
 <view class="container">
+  <view class="header">
+    <view class="user-info">
+      <image class="avatar" src="{{userAvatar || '/images/avatar-placeholder.svg'}}"></image>
+      <text class="welcome">欢迎，{{username || '用户'}}</text>
+    </view>
+    <button class="logout-btn" bindtap="onLogout">退出登录</button>
+  </view>
   <view class="main-content">
     <button class="colorize-button" bindtap="onColorizePress">手绘变彩图</button>
   </view>

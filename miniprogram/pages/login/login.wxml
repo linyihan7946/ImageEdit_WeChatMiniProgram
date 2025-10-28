@@ -1,0 +1,20 @@
+<!-- login.wxml -->
+<view class="container">
+  <view class="header">
+    <text class="title">欢迎使用手绘变彩图</text>
+    <text class="subtitle">微信一键登录，快速开始使用</text>
+  </view>
+  
+  <view class="wechat-login">
+    <button 
+      class="wechat-btn" 
+      open-type="getUserInfo" 
+      bind:getuserinfo="onWechatLogin" 
+      loading="{{loading}}"
+    >
+      <image class="wechat-icon" src="/images/wechat-logo.svg"></image>
+      <text>微信一键登录</text>
+    </button>
+    <text class="tips">登录即表示您同意《用户协议》和《隐私政策》</text>
+  </view>
+</view>
