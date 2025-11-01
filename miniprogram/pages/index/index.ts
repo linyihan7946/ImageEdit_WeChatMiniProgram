@@ -81,6 +81,45 @@ Component({
         success: (res) => {
           console.log('选择的图片:', res.tempFiles[0])
           // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
+          const userInfo = getApp().globalData.userInfo;
+          wx.request({
+            url: 'http://localhost:3000/edit-image',
+            method: 'POST',
+            data: {
+              code: getApp().globalData.code,
+              userInfo: userInfo,
+              instruction: '将手绘图变成彩图', 
+              imageUrls: [res.tempFiles[0].tempFilePath]
+            },
+            success: (res) => {
+              const data: any = res.data;
+              if (res.statusCode === 200 && data && data.success) {
+                  const images = data.data.images;
+                  if (images.length > 0) {
+                    // 假设服务器返回的是第一个编辑后的图片URL
+                    const editedImageUrl = images[0];
+                    console.log('编辑后的图片URL:', editedImageUrl);
+                  }
+                  wx.showToast({
+                    title: '图片编辑成功',
+                    icon: 'success'
+                  });
+              } else {
+                wx.showToast({
+                  title: '图片编辑失败，请重试',
+                  icon: 'none'
+                });
+              }
+            },
+            fail: (err) => {
+              const tip = '图片编辑请求失败:';
+              console.error(tip, err);
+              wx.showToast({
+                title: tip + err.errMsg,
+                icon: 'none'
+              });
+            }
+          });
         },
         fail: (err) => {
           console.error('选择图片失败:', err)
