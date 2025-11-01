@@ -1,4 +1,5 @@
 // login.ts
+import { API_URLS } from '../../config/api';
 
 Page({
   data: {
@@ -46,7 +47,7 @@ Page({
     
     // 调用后端登录接口
     wx.request({
-      url: 'http://localhost:3000/api/wechat/login',
+      url: API_URLS.USER_LOGIN,
       method: 'POST',
       data: {
         code: getApp().globalData.code,

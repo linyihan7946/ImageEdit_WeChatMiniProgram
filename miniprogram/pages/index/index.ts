@@ -1,4 +1,5 @@
 // index.ts
+import { API_URLS } from '../../config/api';
 
 Component({
   data: {
@@ -83,7 +84,7 @@ Component({
           // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
           const userInfo = getApp().globalData.userInfo;
           wx.request({
-            url: 'http://localhost:3000/edit-image',
+            url: API_URLS.IMAGE_EDIT,
             method: 'POST',
             data: {
               code: getApp().globalData.code,
