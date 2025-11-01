@@ -89,7 +89,7 @@ Component({
             data: {
               code: getApp().globalData.code,
               userInfo: userInfo,
-              instruction: '将手绘图变成彩图', 
+              instruction: '将下面的手绘图变成漂亮的水彩画图', 
               imageUrls: [res.tempFiles[0].tempFilePath]
             },
             success: (res) => {
