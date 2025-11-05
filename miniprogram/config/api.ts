@@ -10,4 +10,7 @@ export const API_URLS = {
 
   // 图片编辑新接口
   IMAGE_EDIT_NEW: `${API_BASE_URL}/edit-image-new`,
+  
+  // COS临时密钥接口
+  GET_COS_KEYS: `${API_BASE_URL}/api/cos/temp-keys`,
 };

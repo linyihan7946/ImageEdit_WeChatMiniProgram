@@ -1,5 +1,6 @@
 // index.ts
 import { API_URLS } from '../../config/api';
+import { getTempKeys } from '../../utils/cos-upload';
 
 Component({
   data: {
@@ -70,7 +71,27 @@ Component({
       });
     },
     
-    // 手绘变彩图按钮点击事件
+    // 获取cos的授权按钮点击事件
+    onGetCosAuth() {
+      wx.showLoading({ title: '正在获取授权...' });
+      getTempKeys()
+        .then((keys) => {
+          wx.hideLoading();
+          console.log('成功获取COS临时密钥:', keys);
+          wx.showToast({
+            title: '获取授权成功',
+            icon: 'success'
+          });
+        })
+        .catch((error) => {
+          wx.hideLoading();
+          console.error('获取COS授权失败:', error);
+          wx.showToast({
+            title: '获取授权失败',
+            icon: 'error'
+          });
+        });
+    },
     onColorizePress() {
       // 这里可以添加手绘变彩图的逻辑
       console.log('手绘变彩图按钮被点击')

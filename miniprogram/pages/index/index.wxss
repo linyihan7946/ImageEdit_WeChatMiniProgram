@@ -66,7 +66,7 @@ page {
 .colorize-button {
   width: 80%;
   height: 100rpx;
-  background-color: #07c160;
+  background-color: #07C160;
   color: white;
   font-size: 36rpx;
   font-weight: bold;
@@ -75,9 +75,28 @@ page {
   justify-content: center;
   align-items: center;
   box-shadow: 0 4rpx 20rpx rgba(7, 193, 96, 0.3);
+  margin: 20px 0;
 }
 
 .colorize-button:active {
   opacity: 0.8;
-  transform: scale(0.98);
+}
+
+.cos-auth-button {
+  width: 80%;
+  height: 100rpx;
+  background-color: #1296DB;
+  color: white;
+  font-size: 36rpx;
+  font-weight: bold;
+  border-radius: 50rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(18, 150, 219, 0.3);
+  margin: 10px 0 20px;
+}
+
+.cos-auth-button:active {
+  opacity: 0.8;
 }
