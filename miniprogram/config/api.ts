@@ -7,4 +7,7 @@ export const API_URLS = {
   
   // 图片编辑接口
   IMAGE_EDIT: `${API_BASE_URL}/edit-image`,
+
+  // 图片编辑新接口
+  IMAGE_EDIT_NEW: `${API_BASE_URL}/edit-image-new`,
 };
