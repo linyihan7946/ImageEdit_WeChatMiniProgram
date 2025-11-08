@@ -1,11 +1,12 @@
 // index.ts
 import { API_URLS } from '../../config/api';
-import { getTempKeys } from '../../utils/cos-upload';
+import { directUploadFileToCos, getTempKeys } from '../../utils/cos-upload';
 
 Component({
   data: {
     username: '',
-    userAvatar: ''
+    userAvatar: '',
+    filePath: ''
   },
   
   lifetimes: {
@@ -74,23 +75,30 @@ Component({
     // 获取cos的授权按钮点击事件
     onGetCosAuth() {
       wx.showLoading({ title: '正在获取授权...' });
-      getTempKeys()
-        .then((keys) => {
-          wx.hideLoading();
-          console.log('成功获取COS临时密钥:', keys);
-          wx.showToast({
-            title: '获取授权成功',
-            icon: 'success'
-          });
-        })
-        .catch((error) => {
-          wx.hideLoading();
-          console.error('获取COS授权失败:', error);
-          wx.showToast({
-            title: '获取授权失败',
-            icon: 'error'
-          });
-        });
+      // directUploadFileToCos({
+      //   filePath: res.tempFiles[0].tempFilePath,
+      //   fileName: 'test.jpg',
+      //   fileType: 'image/jpeg',
+      // }).then((url) => {
+      //   console.log('上传到COS成功，URL:', url);
+      // })
+      // getTempKeys()
+      //   .then((keys) => {
+      //     wx.hideLoading();
+      //     console.log('成功获取COS临时密钥:', keys);
+      //     wx.showToast({
+      //       title: '获取授权成功',
+      //       icon: 'success'
+      //     });
+      //   })
+      //   .catch((error) => {
+      //     wx.hideLoading();
+      //     console.error('获取COS授权失败:', error);
+      //     wx.showToast({
+      //       title: '获取授权失败',
+      //       icon: 'error'
+      //     });
+      //   });
     },
     onColorizePress() {
       // 这里可以添加手绘变彩图的逻辑
@@ -104,6 +112,13 @@ Component({
           console.log('选择的图片:', res.tempFiles[0])
           // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
           const userInfo = getApp().globalData.userInfo;
+
+          directUploadFileToCos({
+            filePath: res.tempFiles[0].tempFilePath,
+            folder: 'uploads'
+          }).then((url) => {
+            console.log('上传到COS成功，URL:', url);
+          })
 
           // // 方法2：
           // wx.request({
@@ -149,44 +164,44 @@ Component({
           // });
           
           // 方法1：
-          wx.request({
-            url: API_URLS.IMAGE_EDIT,
-            method: 'POST',
-            data: {
-              code: getApp().globalData.code,
-              userInfo: userInfo,
-              instruction: '将下面的手绘图变成漂亮的水彩画图', 
-              imageUrls: [res.tempFiles[0].tempFilePath]
-            },
-            success: (res) => {
-              const data: any = res.data;
-              if (res.statusCode === 200 && data && data.success) {
-                  const images = data.data.images;
-                  if (images.length > 0) {
-                    // 假设服务器返回的是第一个编辑后的图片URL
-                    const editedImageUrl = images[0];
-                    console.log('编辑后的图片URL:', editedImageUrl);
-                  }
-                  wx.showToast({
-                    title: '图片编辑成功',
-                    icon: 'success'
-                  });
-              } else {
-                wx.showToast({
-                  title: '图片编辑失败，请重试',
-                  icon: 'none'
-                });
-              }
-            },
-            fail: (err) => {
-              const tip = '图片编辑请求失败:';
-              console.error(tip, err);
-              wx.showToast({
-                title: tip + err.errMsg,
-                icon: 'none'
-              });
-            }
-          });
+          // wx.request({
+          //   url: API_URLS.IMAGE_EDIT,
+          //   method: 'POST',
+          //   data: {
+          //     code: getApp().globalData.code,
+          //     userInfo: userInfo,
+          //     instruction: '将下面的手绘图变成漂亮的水彩画图', 
+          //     imageUrls: [res.tempFiles[0].tempFilePath]
+          //   },
+          //   success: (res) => {
+          //     const data: any = res.data;
+          //     if (res.statusCode === 200 && data && data.success) {
+          //         const images = data.data.images;
+          //         if (images.length > 0) {
+          //           // 假设服务器返回的是第一个编辑后的图片URL
+          //           const editedImageUrl = images[0];
+          //           console.log('编辑后的图片URL:', editedImageUrl);
+          //         }
+          //         wx.showToast({
+          //           title: '图片编辑成功',
+          //           icon: 'success'
+          //         });
+          //     } else {
+          //       wx.showToast({
+          //         title: '图片编辑失败，请重试',
+          //         icon: 'none'
+          //       });
+          //     }
+          //   },
+          //   fail: (err) => {
+          //     const tip = '图片编辑请求失败:';
+          //     console.error(tip, err);
+          //     wx.showToast({
+          //       title: tip + err.errMsg,
+          //       icon: 'none'
+          //     });
+          //   }
+          // });
         },
         fail: (err) => {
           console.error('选择图片失败:', err)
