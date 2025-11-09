@@ -133,6 +133,95 @@ Component({
       });
     },
     
+    // 发送Base64到后端按钮点击事件
+    onUploadBase64ToBackend() {
+      wx.showLoading({ title: '准备中...' });
+      
+      // 选择图片
+      wx.chooseImage({
+        count: 1,
+        sizeType: ['compressed'], // 使用压缩图片以减小Base64大小
+        sourceType: ['album', 'camera'],
+        success: (res) => {
+          wx.hideLoading();
+          const imagePath = res.tempFilePaths[0];
+          console.log('选择的图片路径:', imagePath);
+          
+          wx.showLoading({ title: '转换中...' });
+          
+          // 调用图片转Base64函数
+          imageToFullBase64(imagePath)
+            .then((base64) => {
+              wx.hideLoading();
+              console.log('图片转换为Base64成功，长度:', base64.length);
+              
+              // 对于大Base64数据的处理
+              wx.showLoading({ title: '发送中...' });
+              
+              // 移除Base64前缀（如果需要的话）
+              const pureBase64 = base64.replace(/^data:image\/\w+;base64,/, '');
+              
+              // 使用wx.request发送数据
+              // 对于大数据，设置适当的超时时间和使用POST方法
+              wx.request({
+                url: API_URLS.UPLOAD_BASE64_TO_COS, // 使用新的Base64上传接口
+                method: 'POST',
+                timeout: 60000, // 增加超时时间到60秒
+                data: {
+                  imageBase64: pureBase64, // 发送纯Base64数据
+                  imageType: 'jpg'
+                },
+                header: {
+                  'content-type': 'application/json',
+                  'Authorization': `Bearer ${wx.getStorageSync('userToken')}`
+                },
+                success: (res) => {
+                  wx.hideLoading();
+                  console.log('发送Base64到后端成功:', res);
+                  
+                  if (res.statusCode === 200 && res.data && typeof res.data === 'object' && 'success' in res.data && res.data.success) {
+                    wx.showModal({
+                      title: '发送成功',
+                      content: `后端返回成功！\nBase64长度: ${base64.length}`,
+                      showCancel: false
+                    });
+                  } else {
+                    wx.showModal({
+                      title: '发送失败',
+                      content: `后端返回错误: ${(res.data as any)?.message || '未知错误'}`,
+                      showCancel: false
+                    });
+                  }
+                },
+                fail: (error) => {
+                  wx.hideLoading();
+                  console.error('发送Base64到后端失败:', error);
+                  
+                  // 处理可能的网络错误或请求失败
+                  wx.showModal({
+                    title: '发送失败',
+                    content: `请求失败: ${error.errMsg}\n\n提示：对于大图片，可能需要更长的超时时间或使用分块上传。`,
+                    showCancel: false
+                  });
+                }
+              });
+            })
+            .catch((error) => {
+              wx.hideLoading();
+              console.error('图片转换为Base64失败:', error);
+              wx.showToast({
+                title: '转换失败',
+                icon: 'error'
+              });
+            });
+        },
+        fail: (error) => {
+          wx.hideLoading();
+          console.error('选择图片失败:', error);
+        }
+      });
+    },
+    
     // 获取cos的授权按钮点击事件
     onGetCosAuth() {
       wx.showLoading({ title: '正在获取授权...' });

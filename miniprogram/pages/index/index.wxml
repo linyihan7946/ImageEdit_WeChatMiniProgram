@@ -11,5 +11,6 @@
     <button class="colorize-button" bindtap="onColorizePress">手绘变彩图</button>
     <button class="cos-auth-button" bindtap="onGetCosAuth">获取cos的授权</button>
     <button class="test-button" bindtap="onTestImageToBase64">测试</button>
+    <button class="base64-upload-button" bindtap="onUploadBase64ToBackend">发送Base64到后端</button>
   </view>
 </view>
