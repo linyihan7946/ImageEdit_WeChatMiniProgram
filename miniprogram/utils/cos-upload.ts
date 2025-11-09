@@ -9,6 +9,8 @@ export interface CosTempKeys {
   region: string;
   bucket: string;
   expiredTime: number;
+  policy: string;
+  signature: string;
 }
 
 // 上传配置选项
@@ -90,14 +92,14 @@ export const getTempKeys = (): Promise<any> => {
 /**
  * 生成文件存储路径
  * @param options 上传选项
- * @returns 文件路径
+ * @returns 文件路径（不包含开头的/）
  */
 const generateFilePath = (options: UploadOptions): string => {
   let { folder = '', fileName, filePath, fileType } = options;
   
-  // 确保文件夹路径以/开头但不以/结尾
-  if (folder && !folder.startsWith('/')) {
-    folder = `/${folder}`;
+  // 确保文件夹路径不以/开头和结尾
+  if (folder.startsWith('/')) {
+    folder = folder.slice(1);
   }
   if (folder && folder.endsWith('/')) {
     folder = folder.slice(0, -1);
@@ -117,7 +119,8 @@ const generateFilePath = (options: UploadOptions): string => {
     fileName = `${timestamp}-${random}.${fileType}`;
   }
   
-  return `${folder}/${fileName}`;
+  // 如果有文件夹，则返回 folder/fileName，否则直接返回 fileName
+  return folder ? `${folder}/${fileName}` : fileName;
 };
 
 /**
@@ -129,8 +132,9 @@ export function directUploadFileToCos(options: DirectUploadOptions): Promise<str
   return new Promise((resolve, reject) => {
       getTempKeys().then((res) => {
         try { 
-          const { secretId, secretKey, securityToken, region, bucket, expiredTime } = res;
+          const { secretId, secretKey, securityToken, region, bucket, expiredTime, policy, signature } = res;
           const { filePath, folder = '', fileName, fileType } = options;
+          console.log("res:", res);
           
           // 构建临时的UploadOptions用于生成文件路径
           const tempUploadOptions: UploadOptions = {
@@ -147,23 +151,19 @@ export function directUploadFileToCos(options: DirectUploadOptions): Promise<str
           console.log(cosFilePath);
 
           const dir = `https://${bucket}.cos.${region}.myqcloud.com`;
-          const cosUploadUrl = `${dir}${cosFilePath}`;
+          const cosUploadUrl = `${dir}/${cosFilePath}`;
           
           // 调用微信小程序上传API
           wx.uploadFile({
-            url: cosUploadUrl,
+            url: dir,
             filePath: filePath,
             name: 'file',
-            header: {
-              'Authorization': '', // 不需要手动设置，COS会自动处理
-              'x-cos-security-token': securityToken,
-            },
             formData: {
               'key': cosFilePath, // 去掉开头的/
+              'policy': policy,
+              'signature': signature, // 不需要手动设置，COS会自动处理
               'success_action_status': '200',
-              'Signature': '', // 不需要手动设置，COS会自动处理
-              'x-cos-security-token': securityToken,
-              'Content-Type': '', // 不需要手动设置，微信会自动处理
+              'x-cos-debug': 'true' // 关键：前端也必须传递这个参数
             },
             success: (res: any) => {
               console.log("success:", res);

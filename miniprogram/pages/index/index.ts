@@ -1,6 +1,7 @@
 // index.ts
 import { API_URLS } from '../../config/api';
 import { directUploadFileToCos, getTempKeys } from '../../utils/cos-upload';
+import { imageToFullBase64 } from '../../utils/image-util';
 
 Component({
   data: {
@@ -110,15 +111,19 @@ Component({
         sourceType: ['album', 'camera'],
         success: (res) => {
           console.log('选择的图片:', res.tempFiles[0].tempFilePath)
-          // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
-          const userInfo = getApp().globalData.userInfo;
 
-          directUploadFileToCos({
-            filePath: res.tempFiles[0].tempFilePath,
-            folder: 'uploads'
-          }).then((url) => {
-            console.log('上传到COS成功，URL:', url);
+          imageToFullBase64(res.tempFiles[0].tempFilePath).then((base64) => {
+            console.log('图片转换为Base64成功:', base64);
           })
+          // // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
+          // const userInfo = getApp().globalData.userInfo;
+
+          // directUploadFileToCos({
+          //   filePath: res.tempFiles[0].tempFilePath,
+          //   folder: 'uploads'
+          // }).then((url) => {
+          //   console.log('上传到COS成功，URL:', url);
+          // })
 
           // // 方法2：
           // wx.request({
