@@ -73,6 +73,66 @@ Component({
       });
     },
     
+    // 测试图片转Base64按钮点击事件
+    onTestImageToBase64() {
+      wx.showLoading({ title: '准备中...' });
+      
+      // 选择图片
+      wx.chooseImage({
+        count: 1,
+        sizeType: ['original', 'compressed'],
+        sourceType: ['album', 'camera'],
+        success: (res) => {
+          wx.hideLoading();
+          const imagePath = res.tempFilePaths[0];
+          console.log('选择的图片路径:', imagePath);
+          
+          wx.showLoading({ title: '转换中...' });
+          
+          // 调用图片转Base64函数
+          imageToFullBase64(imagePath)
+            .then((base64) => {
+              wx.hideLoading();
+              console.log('图片转换为Base64成功:', base64);
+              
+              // 显示转换结果
+              wx.showModal({
+                title: '转换成功',
+                content: `Base64字符串长度: ${base64.length}\n首100字符: ${base64.substring(0, 100)}...`,
+                showCancel: true,
+                confirmText: '复制部分内容',
+                success: (res) => {
+                  if (res.confirm) {
+                    // 复制部分Base64内容到剪贴板
+                    wx.setClipboardData({
+                      data: base64.substring(0, 200),
+                      success: () => {
+                        wx.showToast({
+                          title: '已复制部分内容',
+                          icon: 'success'
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            })
+            .catch((error) => {
+              wx.hideLoading();
+              console.error('图片转换为Base64失败:', error);
+              wx.showToast({
+                title: '转换失败',
+                icon: 'error'
+              });
+            });
+        },
+        fail: (error) => {
+          wx.hideLoading();
+          console.error('选择图片失败:', error);
+        }
+      });
+    },
+    
     // 获取cos的授权按钮点击事件
     onGetCosAuth() {
       wx.showLoading({ title: '正在获取授权...' });
