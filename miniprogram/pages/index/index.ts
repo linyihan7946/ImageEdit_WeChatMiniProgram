@@ -82,23 +82,23 @@ Component({
       // }).then((url) => {
       //   console.log('上传到COS成功，URL:', url);
       // })
-      // getTempKeys()
-      //   .then((keys) => {
-      //     wx.hideLoading();
-      //     console.log('成功获取COS临时密钥:', keys);
-      //     wx.showToast({
-      //       title: '获取授权成功',
-      //       icon: 'success'
-      //     });
-      //   })
-      //   .catch((error) => {
-      //     wx.hideLoading();
-      //     console.error('获取COS授权失败:', error);
-      //     wx.showToast({
-      //       title: '获取授权失败',
-      //       icon: 'error'
-      //     });
-      //   });
+      getTempKeys()
+        .then((keys) => {
+          wx.hideLoading();
+          console.log('成功获取COS临时密钥:', keys);
+          wx.showToast({
+            title: '获取授权成功',
+            icon: 'success'
+          });
+        })
+        .catch((error) => {
+          wx.hideLoading();
+          console.error('获取COS授权失败:', error);
+          wx.showToast({
+            title: '获取授权失败',
+            icon: 'error'
+          });
+        });
     },
     onColorizePress() {
       // 这里可以添加手绘变彩图的逻辑
@@ -109,7 +109,7 @@ Component({
         mediaType: ['image'],
         sourceType: ['album', 'camera'],
         success: (res) => {
-          console.log('选择的图片:', res.tempFiles[0])
+          console.log('选择的图片:', res.tempFiles[0].tempFilePath)
           // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
           const userInfo = getApp().globalData.userInfo;
 

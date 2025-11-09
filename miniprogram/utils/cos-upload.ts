@@ -125,59 +125,73 @@ const generateFilePath = (options: UploadOptions): string => {
  * @param options 直接上传选项，包含文件路径和COS密钥信息
  * @returns 上传后的文件URL
  */
-export const directUploadFileToCos = async (options: DirectUploadOptions): Promise<string> => {
-  try {
-    const { secretId, secretKey, securityToken, region, bucket, expiredTime } = await getTempKeys();
-    const { filePath, folder = '', fileName, fileType } = options;
-    
-    // 构建临时的UploadOptions用于生成文件路径
-    const tempUploadOptions: UploadOptions = {
-      filePath,
-      folder,
-      fileName,
-      fileType,
-      onProgress: options.onProgress
-    };
-    console.log(tempUploadOptions);
-    
-    // 生成文件路径
-    const cosFilePath = generateFilePath(tempUploadOptions);
-    
-    // 调用微信小程序上传API
-    const uploadResult = await wx.uploadFile({
-      // COS上传地址，格式：https://Bucket.Region.myqcloud.com/ObjectName
-      url: `https://${bucket}.cos.${region}.myqcloud.com${cosFilePath}`,
-      filePath: filePath,
-      name: 'file',
-      header: {
-        'Authorization': '', // 不需要手动设置，COS会自动处理
-        'x-cos-security-token': securityToken,
-      },
-      formData: {
-        'key': cosFilePath.replace(/^\//, ''), // 去掉开头的/
-        'success_action_status': '200',
-        'Signature': '', // 不需要手动设置，COS会自动处理
-        'x-cos-security-token': securityToken,
-        'Content-Type': '', // 不需要手动设置，微信会自动处理
-      },
-      success: () => {},
-      fail: (error) => {
-        console.error('直接上传文件失败:', error);
-        throw new Error(`文件上传失败: ${error.errMsg || '未知错误'}`);
-      },
-      complete: () => {},
-    });
+export function directUploadFileToCos(options: DirectUploadOptions): Promise<string> {
+  return new Promise((resolve, reject) => {
+      getTempKeys().then((res) => {
+        try { 
+          const { secretId, secretKey, securityToken, region, bucket, expiredTime } = res;
+          const { filePath, folder = '', fileName, fileType } = options;
+          
+          // 构建临时的UploadOptions用于生成文件路径
+          const tempUploadOptions: UploadOptions = {
+            filePath,
+            folder,
+            fileName,
+            fileType,
+            onProgress: options.onProgress
+          };
+          console.log(tempUploadOptions);
+          
+          // 生成文件路径
+          const cosFilePath = generateFilePath(tempUploadOptions);
+          console.log(cosFilePath);
 
-    // 生成可访问的文件URL
-    const fileUrl = `https://${bucket}.cos.${region}.myqcloud.com${cosFilePath}`;
-    
-    console.log('直接上传文件成功，URL:', fileUrl);
-    return fileUrl;
-  } catch (error) {
-    console.error('直接上传文件到COS失败:', error);
-    throw error;
-  }
-};
+          const dir = `https://${bucket}.cos.${region}.myqcloud.com`;
+          const cosUploadUrl = `${dir}${cosFilePath}`;
+          
+          // 调用微信小程序上传API
+          wx.uploadFile({
+            url: cosUploadUrl,
+            filePath: filePath,
+            name: 'file',
+            header: {
+              'Authorization': '', // 不需要手动设置，COS会自动处理
+              'x-cos-security-token': securityToken,
+            },
+            formData: {
+              'key': cosFilePath, // 去掉开头的/
+              'success_action_status': '200',
+              'Signature': '', // 不需要手动设置，COS会自动处理
+              'x-cos-security-token': securityToken,
+              'Content-Type': '', // 不需要手动设置，微信会自动处理
+            },
+            success: (res: any) => {
+              console.log("success:", res);
+              console.log("上传功能成功")
+              resolve(cosUploadUrl);
+            },
+            fail: (error) => {
+              console.error('直接上传文件失败:', error);
+              // throw new Error(`文件上传失败: ${error.errMsg || '未知错误'}`);
+              reject(error);
+            },
+            complete: (res: any) => {
+              console.log("complete:", res);
+              console.log("上传功能完成")
+              resolve(cosUploadUrl);
+            },
+          });
+
+          // console.log('直接上传文件成功，URL:', cosUploadUrl);
+          // return cosUploadUrl;
+        } catch (error) {
+          console.error('直接上传文件到COS失败:', error);
+          // throw error;
+          reject(error);
+        }
+      });
+  });
+}
 
 export default {
   getTempKeys,
