@@ -59,12 +59,27 @@ page {
   flex: 1;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 30rpx;
+}
+
+.vertical-button {
+  width: 80%;
+  margin: 0;
+  padding: 0;
+  min-width: auto;
+  border: none;
+  outline: none;
+}
+
+/* 重置按钮默认样式 */
+.vertical-button::after {
+  border: none;
 }
 
 .colorize-button {
-  width: 80%;
   height: 100rpx;
   background-color: #07C160;
   color: white;
@@ -75,7 +90,6 @@ page {
   justify-content: center;
   align-items: center;
   box-shadow: 0 4rpx 20rpx rgba(7, 193, 96, 0.3);
-  margin: 20px 0;
 }
 
 .colorize-button:active {
@@ -83,7 +97,6 @@ page {
 }
 
 .cos-auth-button {
-  width: 80%;
   height: 100rpx;
   background-color: #1296DB;
   color: white;
@@ -94,7 +107,6 @@ page {
   justify-content: center;
   align-items: center;
   box-shadow: 0 4rpx 20rpx rgba(18, 150, 219, 0.3);
-  margin: 10px 0 20px;
 }
 
 .cos-auth-button:active {
@@ -102,7 +114,6 @@ page {
 }
 
 .test-button {
-  width: 80%;
   height: 100rpx;
   background-color: #FF9800;
   color: white;
@@ -113,9 +124,25 @@ page {
   justify-content: center;
   align-items: center;
   box-shadow: 0 4rpx 20rpx rgba(255, 152, 0, 0.3);
-  margin: 10px 0 20px;
 }
 
 .test-button:active {
+  opacity: 0.8;
+}
+
+.base64-upload-button {
+  height: 100rpx;
+  background-color: #9C27B0;
+  color: white;
+  font-size: 36rpx;
+  font-weight: bold;
+  border-radius: 50rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(156, 39, 176, 0.3);
+}
+
+.base64-upload-button:active {
   opacity: 0.8;
 }
