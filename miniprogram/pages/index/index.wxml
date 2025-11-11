@@ -8,7 +8,8 @@
     <button class="logout-btn" bindtap="onLogout">退出登录</button>
   </view>
   <view class="main-content">
-    <button class="vertical-button colorize-button" bindtap="onColorizePress">手绘变彩图</button>
-    <button class="vertical-button cos-auth-button" bindtap="onTest">测试</button>
+    <button class="vertical-button doubao-button" bindtap="onDoubaoRemoveWatermark">豆包出图去水印</button>
+    <button class="vertical-button colorize-button" bindtap="onColorizePress" hidden>手绘变彩图</button>
+    <button class="vertical-button cos-auth-button" bindtap="onTest" hidden>测试</button>
   </view>
 </view>

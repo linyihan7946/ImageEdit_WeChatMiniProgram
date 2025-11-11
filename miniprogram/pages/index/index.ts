@@ -1,7 +1,5 @@
 // index.ts
-import { API_URLS } from '../../config/api';
-import { directUploadFileToCos, getTempKeys } from '../../utils/cos-upload';
-import { imageToFullBase64 } from '../../utils/image-util';
+import { getTempKeys } from '../../utils/cos-upload';
 import { uploadImageToBackend } from '../../utils/base64-upload';
 import { processAndShowEditResult } from '../../utils/image-edit';
 
@@ -20,6 +18,59 @@ Component({
   },
   
   methods: {
+    // 豆包出图去水印按钮点击事件
+    onDoubaoRemoveWatermark() {
+      wx.showLoading({
+        title: '准备中...',
+        mask: true
+      });
+      
+      // 选择图片
+      wx.chooseImage({
+        count: 1,
+        sizeType: ['original', 'compressed'],
+        sourceType: ['album', 'camera'],
+        success: async (res) => {
+          wx.hideLoading();
+          const imagePath = res.tempFilePaths[0];
+          console.log('选择的图片路径:', imagePath);
+          
+          try {
+            wx.showLoading({
+              title: '正在处理...',
+              mask: true
+            });
+            
+            // 上传图片到后端
+            const uploadResult = await uploadImageToBackend(imagePath);
+            const imageUrl = uploadResult.data.fileUrl;
+            
+            // 这里可以调用专门的去水印API或使用现有接口处理
+            const editResult = await processAndShowEditResult(
+              imageUrl, 
+              '移除图片上的水印，保持原图内容不变'
+            );
+            
+            if (editResult) {
+              console.log('去水印后的图片URL:', editResult);
+              // 可以添加显示或保存处理后图片的逻辑
+            }
+          } catch (error) {
+            wx.hideLoading();
+            console.error('去水印处理失败:', error);
+            wx.showToast({
+              title: '处理失败，请重试',
+              icon: 'none'
+            });
+          }
+        },
+        fail: (error) => {
+          wx.hideLoading();
+          console.error('选择图片失败:', error);
+        }
+      });
+    },
+    
     // 检查登录状态并获取用户信息
     checkLoginStatus() {
       const token = wx.getStorageSync('userToken');

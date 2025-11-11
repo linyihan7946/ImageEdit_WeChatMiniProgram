@@ -79,6 +79,23 @@ page {
   border: none;
 }
 
+.doubao-button {
+  height: 100rpx;
+  background-color: #4A90E2;
+  color: white;
+  font-size: 36rpx;
+  font-weight: bold;
+  border-radius: 50rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(74, 144, 226, 0.3);
+}
+
+.doubao-button:active {
+  opacity: 0.8;
+}
+
 .colorize-button {
   height: 100rpx;
   background-color: #07C160;
