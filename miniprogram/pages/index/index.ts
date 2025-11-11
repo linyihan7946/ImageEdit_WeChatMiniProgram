@@ -135,48 +135,48 @@ Component({
     },
     
     // 发送Base64到后端按钮点击事件
-  async onUploadBase64ToBackend() {
-    try {
-      // 选择图片
-      const chooseResult = await new Promise<any>((resolve, reject) => {
-        wx.chooseImage({
-          count: 1,
-          sizeType: ['compressed'], // 使用压缩图片以减小Base64大小
-          sourceType: ['album', 'camera'],
-          success: resolve,
-          fail: reject
+    async onUploadBase64ToBackend() {
+      try {
+        // 选择图片
+        const chooseResult = await new Promise<any>((resolve, reject) => {
+          wx.chooseImage({
+            count: 1,
+            sizeType: ['compressed'], // 使用压缩图片以减小Base64大小
+            sourceType: ['album', 'camera'],
+            success: resolve,
+            fail: reject
+          });
         });
-      });
 
-      const imagePath = chooseResult.tempFilePaths[0];
-      console.log('选择的图片路径:', imagePath);
-      
-      // 调用工具类中的方法上传图片
-      const result = await uploadImageToBackend(imagePath);
-      
-      // 显示成功提示
-      wx.showModal({
-        title: '上传成功',
-        content: `后端返回成功！\n文件URL: ${result.data.fileUrl}`,
-        showCancel: false
-      });
-    } catch (error) {
-      console.error('上传Base64到后端失败:', error);
-      wx.showModal({
-        title: '上传失败',
-        content: (error as any).message || '请稍后重试',
-        showCancel: false
-      });
-      
-      // 针对不同错误类型给出提示
-      if ((error as any).message && (error as any).message.includes('413')) {
-        wx.showToast({
-          title: '文件过大，已启用分块上传',
-          icon: 'none'
+        const imagePath = chooseResult.tempFilePaths[0];
+        console.log('选择的图片路径:', imagePath);
+        
+        // 调用工具类中的方法上传图片
+        const result = await uploadImageToBackend(imagePath);
+        
+        // 显示成功提示
+        wx.showModal({
+          title: '上传成功',
+          content: `后端返回成功！\n文件URL: ${result.data.fileUrl}`,
+          showCancel: false
         });
+      } catch (error) {
+        console.error('上传Base64到后端失败:', error);
+        wx.showModal({
+          title: '上传失败',
+          content: (error as any).message || '请稍后重试',
+          showCancel: false
+        });
+        
+        // 针对不同错误类型给出提示
+        if ((error as any).message && (error as any).message.includes('413')) {
+          wx.showToast({
+            title: '文件过大，已启用分块上传',
+            icon: 'none'
+          });
+        }
       }
-    }
-  },
+    },
     
     // 获取cos的授权按钮点击事件
     onGetCosAuth() {
@@ -206,6 +206,8 @@ Component({
           });
         });
     },
+
+    // 手绘变彩图
     onColorizePress() {
       // 这里可以添加手绘变彩图的逻辑
       console.log('手绘变彩图按钮被点击')
@@ -214,14 +216,56 @@ Component({
         count: 1,
         mediaType: ['image'],
         sourceType: ['album', 'camera'],
-        success: (res) => {
-          console.log('选择的图片:', res.tempFiles[0].tempFilePath)
+        success: async (res) => {
+          
 
-          imageToFullBase64(res.tempFiles[0].tempFilePath).then((base64) => {
-            console.log('图片转换为Base64成功:', base64);
-          })
-          // // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
-          // const userInfo = getApp().globalData.userInfo;
+          // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
+          const userInfo = getApp().globalData.userInfo;
+          const imagePath = res.tempFiles[0].tempFilePath;
+          console.log('选择的图片:', imagePath)
+          
+          // 调用工具类中的方法上传图片
+          const result = await uploadImageToBackend(imagePath);
+          const imageUrl = result.data.fileUrl;
+          // 方法1：
+          wx.request({
+            url: API_URLS.IMAGE_EDIT,
+            method: 'POST',
+            data: {
+              code: getApp().globalData.code,
+              userInfo: userInfo,
+              instruction: '将下面的手绘图变成漂亮的水彩画图', 
+              imageUrls: [imageUrl]
+            },
+            success: (res) => {
+              const data: any = res.data;
+              if (res.statusCode === 200 && data && data.success) {
+                  const images = data.data.images;
+                  if (images.length > 0) {
+                    // 假设服务器返回的是第一个编辑后的图片URL
+                    const editedImageUrl = images[0];
+                    console.log('编辑后的图片URL:', editedImageUrl);
+                  }
+                  wx.showToast({
+                    title: '图片编辑成功',
+                    icon: 'success'
+                  });
+              } else {
+                wx.showToast({
+                  title: '图片编辑失败，请重试',
+                  icon: 'none'
+                });
+              }
+            },
+            fail: (err) => {
+              const tip = '图片编辑请求失败:';
+              console.error(tip, err);
+              wx.showToast({
+                title: tip + err.errMsg,
+                icon: 'none'
+              });
+            }
+          });
 
           // directUploadFileToCos({
           //   filePath: res.tempFiles[0].tempFilePath,
@@ -245,46 +289,6 @@ Component({
           //   success: (res) => {
           //     const data: any = res.data;
           //     console.log('图片编辑新接口返回数据:', data);
-          //     if (res.statusCode === 200 && data && data.success) {
-          //         const images = data.data.images;
-          //         if (images.length > 0) {
-          //           // 假设服务器返回的是第一个编辑后的图片URL
-          //           const editedImageUrl = images[0];
-          //           console.log('编辑后的图片URL:', editedImageUrl);
-          //         }
-          //         wx.showToast({
-          //           title: '图片编辑成功',
-          //           icon: 'success'
-          //         });
-          //     } else {
-          //       wx.showToast({
-          //         title: '图片编辑失败，请重试',
-          //         icon: 'none'
-          //       });
-          //     }
-          //   },
-          //   fail: (err) => {
-          //     const tip = '图片编辑请求失败:';
-          //     console.error(tip, err);
-          //     wx.showToast({
-          //       title: tip + err.errMsg,
-          //       icon: 'none'
-          //     });
-          //   }
-          // });
-          
-          // 方法1：
-          // wx.request({
-          //   url: API_URLS.IMAGE_EDIT,
-          //   method: 'POST',
-          //   data: {
-          //     code: getApp().globalData.code,
-          //     userInfo: userInfo,
-          //     instruction: '将下面的手绘图变成漂亮的水彩画图', 
-          //     imageUrls: [res.tempFiles[0].tempFilePath]
-          //   },
-          //   success: (res) => {
-          //     const data: any = res.data;
           //     if (res.statusCode === 200 && data && data.success) {
           //         const images = data.data.images;
           //         if (images.length > 0) {
