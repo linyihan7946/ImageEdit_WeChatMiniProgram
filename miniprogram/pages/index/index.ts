@@ -3,6 +3,7 @@ import { API_URLS } from '../../config/api';
 import { directUploadFileToCos, getTempKeys } from '../../utils/cos-upload';
 import { imageToFullBase64 } from '../../utils/image-util';
 import { uploadImageToBackend } from '../../utils/base64-upload';
+import { processAndShowEditResult } from '../../utils/image-edit';
 
 Component({
   data: {
@@ -227,45 +228,13 @@ Component({
           // 调用工具类中的方法上传图片
           const result = await uploadImageToBackend(imagePath);
           const imageUrl = result.data.fileUrl;
-          // 方法1：
-          wx.request({
-            url: API_URLS.IMAGE_EDIT,
-            method: 'POST',
-            data: {
-              code: getApp().globalData.code,
-              userInfo: userInfo,
-              instruction: '将下面的手绘图变成漂亮的水彩画图', 
-              imageUrls: [imageUrl]
-            },
-            success: (res) => {
-              const data: any = res.data;
-              if (res.statusCode === 200 && data && data.success) {
-                  const images = data.data.images;
-                  if (images.length > 0) {
-                    // 假设服务器返回的是第一个编辑后的图片URL
-                    const editedImageUrl = images[0];
-                    console.log('编辑后的图片URL:', editedImageUrl);
-                  }
-                  wx.showToast({
-                    title: '图片编辑成功',
-                    icon: 'success'
-                  });
-              } else {
-                wx.showToast({
-                  title: '图片编辑失败，请重试',
-                  icon: 'none'
-                });
-              }
-            },
-            fail: (err) => {
-              const tip = '图片编辑请求失败:';
-              console.error(tip, err);
-              wx.showToast({
-                title: tip + err.errMsg,
-                icon: 'none'
-              });
-            }
-          });
+          
+          // 调用图片编辑工具类处理图片
+          const editedImageUrl = await processAndShowEditResult(imageUrl, '将下面的手绘图变成漂亮的水彩画图');
+          if (editedImageUrl) {
+            console.log('编辑后的图片URL:', editedImageUrl);
+            // 这里可以添加处理编辑后图片的逻辑
+          }
 
           // directUploadFileToCos({
           //   filePath: res.tempFiles[0].tempFilePath,

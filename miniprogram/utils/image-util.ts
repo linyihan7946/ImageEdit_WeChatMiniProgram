@@ -17,7 +17,7 @@ export const imageToBase64 = (imagePath: string): Promise<string> => {
         success: (res) => {
           // 成功读取文件，返回base64字符串
           console.log('图片转Base64成功');
-          console.log('base64字符串:', res.data);
+          // console.log('base64字符串:', res.data);
           resolve(res.data as string);
         },
         fail: (error) => {

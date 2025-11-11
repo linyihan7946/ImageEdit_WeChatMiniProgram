@@ -20,16 +20,16 @@ class Base64Uploader {
       
       // 转换为Base64
       const base64 = await imageToFullBase64(imagePath);
-      console.log('图片转换为Base64成功，长度:', base64.length);
+      // console.log('图片转换为Base64成功，长度:', base64.length);
       
       // 移除Base64前缀，只保留数据部分
       let pureBase64 = base64.replace(/^data:image\/\w+;base64,/, '');
-      console.log('移除前缀后的Base64长度:', pureBase64.length);
+      // console.log('移除前缀后的Base64长度:', pureBase64.length);
       
       // 判断是否需要分块上传
       if (pureBase64.length > this.CHUNK_SIZE) {
         // 分块上传逻辑
-        console.log('Base64数据过大，启用分块上传');
+        // console.log('Base64数据过大，启用分块上传');
         return await this.uploadBase64InChunks(pureBase64, imagePath);
       } else {
         // 单块上传
@@ -73,7 +73,7 @@ class Base64Uploader {
         });
       });
 
-      console.log('单块上传响应:', response);
+      // console.log('单块上传响应:', response);
 
       if (response.statusCode === 200 && response.data && typeof response.data === 'object' && 'success' in response.data && response.data.success) {
         return response.data;
