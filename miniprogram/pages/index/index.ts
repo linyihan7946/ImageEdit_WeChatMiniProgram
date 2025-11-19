@@ -25,7 +25,7 @@ Component({
         const token = wx.getStorageSync('userToken');
         const response = await new Promise<any>((resolve, reject) => {
           wx.request({
-            url: API_URLS.USER_DAILY_USAGE, // 需要后端提供这个接口
+            url: API_URLS.USER_DAILY_USAGE,
             method: 'GET',
             header: {
               'Authorization': `Bearer ${token}`,
@@ -49,6 +49,12 @@ Component({
     // 豆包出图去水印按钮点击事件
     async onDoubaoRemoveWatermark() {
       console.log('开始点豆包图片出水印流程');
+
+      // 检查登录状态
+      const isLoggedIn = await this.checkLoginStatus();
+      if (!isLoggedIn) {
+        return;
+      }
 
       // 检查今日使用次数
       const todayUsage = await this.getUserDailyUsage();
@@ -114,7 +120,7 @@ Component({
     },
     
     // 检查登录状态并获取用户信息
-    checkLoginStatus() {
+    checkLoginStatus(): boolean {
       const token = wx.getStorageSync('userToken');
       const userInfo = wx.getStorageSync('userInfo');
       
@@ -123,7 +129,7 @@ Component({
         wx.redirectTo({
           url: '/pages/login/login'
         });
-        return;
+        return false;
       }
       
       // 更新用户信息
@@ -145,6 +151,8 @@ Component({
           console.log('未获取到微信昵称');
         }
       }
+      
+      return true;
     },
     
     // 退出登录
@@ -198,8 +206,25 @@ Component({
     },
 
     // 手绘变彩图
-    onColorizePress() {
-      // 这里可以添加手绘变彩图的逻辑
+    async onColorizePress() {
+      // 检查登录状态
+      const isLoggedIn = await this.checkLoginStatus();
+      if (!isLoggedIn) {
+        return;
+      }
+
+      // 检查今日使用次数
+      const todayUsage = await this.getUserDailyUsage();
+      console.log('用户当天使用次数:', todayUsage);
+      if (todayUsage >= 3) {
+        wx.showToast({
+          title: '当天免费次数已用完，如需继续使用请充值！',
+          icon: 'none',
+          duration: 3000
+        });
+        return;
+      }
+
       console.log('手绘变彩图按钮被点击')
       // 示例：可以跳转到图片选择页面或者直接调起图片选择器
       wx.chooseMedia({
