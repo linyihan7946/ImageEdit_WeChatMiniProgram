@@ -52,6 +52,7 @@ Component({
 
       // 检查今日使用次数
       const todayUsage = await this.getUserDailyUsage();
+      console.log('用户当天使用次数:', todayUsage);
       if (todayUsage >= 3) {
         wx.showToast({
           title: '当天免费次数已用完，如需继续使用请充值！',
