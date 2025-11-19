@@ -17,15 +17,16 @@ class ImageEditUtil {
     error?: string 
   }> {
     return new Promise((resolve) => {
-      const code = getApp().globalData.code;
-      const userInfo = getApp().globalData.userInfo;
+      const token = wx.getStorageSync('userToken');
 
       wx.request({
         url: API_URLS.IMAGE_EDIT,
         method: 'POST',
+        header: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         data: {
-          code,
-          userInfo,
           instruction,
           imageUrls: [imageUrl]
         },
@@ -67,15 +68,16 @@ class ImageEditUtil {
     error?: string 
   }> {
     return new Promise((resolve) => {
-      const code = getApp().globalData.code;
-      const userInfo = getApp().globalData.userInfo;
+      const token = wx.getStorageSync('userToken');
 
       wx.request({
         url: API_URLS.IMAGE_EDIT_NEW,
         method: 'POST',
+        header: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         data: {
-          code,
-          userInfo,
           instruction,
           imageUrls: [imageUrl]
         },
