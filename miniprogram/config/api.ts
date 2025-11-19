@@ -19,4 +19,7 @@ export const API_URLS = {
   
   // Base64上传到COS接口
   UPLOAD_BASE64_TO_COS: `${API_BASE_URL}/api/upload-base64-to-cos`,
+
+  // 用户当天使用次数接口
+  USER_DAILY_USAGE: `${API_BASE_URL}/api/user/today-usage`,
 };

@@ -2,6 +2,7 @@
 import { getTempKeys } from '../../utils/cos-upload';
 import { uploadImageToBackend } from '../../utils/base64-upload';
 import { processAndShowEditResult } from '../../utils/image-edit';
+import { API_URLS } from '../../config/api';
 
 Component({
   data: {
@@ -18,8 +19,48 @@ Component({
   },
   
   methods: {
+    // 获取用户当天去水印使用次数
+    async getUserDailyUsage(): Promise<number> {
+      try {
+        const token = wx.getStorageSync('userToken');
+        const response = await new Promise<any>((resolve, reject) => {
+          wx.request({
+            url: API_URLS.USER_DAILY_USAGE, // 需要后端提供这个接口
+            method: 'GET',
+            header: {
+              'Authorization': `Bearer ${token}`,
+              'content-type': 'application/json'
+            },
+            success: resolve,
+            fail: reject
+          });
+        });
+        
+        if (response.statusCode === 200 && response.data && response.data.success) {
+          return response.data.data.todayUsage || 0;
+        }
+        return 0;
+      } catch (error) {
+        console.error('获取用户当天使用次数失败:', error);
+        return 0;
+      }
+    },
+
     // 豆包出图去水印按钮点击事件
-    onDoubaoRemoveWatermark() {
+    async onDoubaoRemoveWatermark() {
+      console.log('开始点豆包图片出水印流程');
+
+      // 检查今日使用次数
+      const todayUsage = await this.getUserDailyUsage();
+      if (todayUsage >= 3) {
+        wx.showToast({
+          title: '当天免费次数已用完，如需继续使用请充值！',
+          icon: 'none',
+          duration: 3000
+        });
+        return;
+      }
+
       wx.showLoading({
         title: '准备中...',
         mask: true
