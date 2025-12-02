@@ -1,0 +1,25 @@
+<!-- watermark-remove.wxml -->
+<view class="container">
+  <!-- 操作区域 -->
+  <view class="action-area">
+    <button class="choose-button" bindtap="chooseImage" loading="{{isProcessing}}">
+      {{isProcessing ? '处理中...' : '选择图片去水印'}}
+    </button>
+  </view>
+
+  <!-- 图片显示区域 -->
+  <view class="image-display-area" wx:if="{{processedImageUrl || originalImagePath}}">
+    <view class="image-container" bindlongtap="onToggleImage">
+      <image 
+        class="result-image" 
+        src="{{isShowingOriginal ? originalImagePath : processedImageUrl}}" 
+        mode="aspectFit"
+      ></image>
+      <view class="image-hint">长按切换图片</view>
+      <view class="image-status">{{isShowingOriginal ? '当前显示：原图' : '当前显示：处理后的图片'}}</view>
+    </view>
+    
+    <!-- 保存按钮 -->
+    <button class="save-button" bindtap="saveImage">保存图片</button>
+  </view>
+</view>

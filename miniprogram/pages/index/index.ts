@@ -83,63 +83,18 @@ Component({
         return;
       }
 
-      wx.showLoading({
-        title: '准备中...',
-        mask: true
-      });
-      
-      // 选择图片
-      wx.chooseImage({
-        count: 1,
-        sizeType: ['original', 'compressed'],
-        sourceType: ['album', 'camera'],
-        success: async (res) => {
-          wx.hideLoading();
-          const imagePath = res.tempFilePaths[0];
-          console.log('选择的图片路径:', imagePath);
-          
-          try {
-            wx.showLoading({
-              title: '正在处理...',
-              mask: true
-            });
-            
-            // 上传图片到后端
-            const uploadResult = await uploadImageToBackend(imagePath);
-            const imageUrl = uploadResult.data.fileUrl;
-            
-            // 这里可以调用专门的去水印API或使用现有接口处理
-            const editResult = await processAndShowEditResult(
-              imageUrl, 
-              '移除图片上的水印，保持原图内容不变'
-            );
-            
-            if (editResult) {
-              console.log('去水印后的图片URL:', editResult);
-              // 保存图片结果到状态中
-              this.setData({
-                originalImagePath: imagePath,
-                processedImageUrl: editResult,
-                isShowingOriginal: false // 默认显示处理后的图片
-              });
-              wx.hideLoading();
-              wx.showToast({
-                title: '处理完成',
-                icon: 'success'
-              });
-            }
-          } catch (error) {
-            wx.hideLoading();
-            console.error('去水印处理失败:', error);
-            wx.showToast({
-              title: '处理失败，请重试',
-              icon: 'none'
-            });
-          }
+      // 跳转到专门的去水印页面
+      wx.navigateTo({
+        url: '/pages/watermark-remove/watermark-remove',
+        success: () => {
+          console.log('成功跳转到去水印页面');
         },
         fail: (error) => {
-          wx.hideLoading();
-          console.error('选择图片失败:', error);
+          console.error('跳转到去水印页面失败:', error);
+          wx.showToast({
+            title: '页面跳转失败，请重试',
+            icon: 'none'
+          });
         }
       });
     },
