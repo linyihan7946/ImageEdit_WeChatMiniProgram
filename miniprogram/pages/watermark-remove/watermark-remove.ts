@@ -1,6 +1,9 @@
 // watermark-remove.ts
 import { uploadImageToBackend } from '../../utils/base64-upload';
 import { processAndShowEditResult } from '../../utils/image-edit';
+import { API_URLS } from '../../config/api';
+import { GLOBAL_CONFIG } from '../../config/config';
+
 
 Page({
   data: {
@@ -9,6 +12,7 @@ Page({
     isShowingOriginal: false, // 当前是否显示原始图片
     isProcessing: false, // 是否正在处理
     todayUsage: 0, // 今日使用次数
+    GLOBAL_CONFIG // 全局配置，供wxml使用
   },
 
   onLoad() {
@@ -18,7 +22,7 @@ Page({
   },
 
   // 检查登录状态
-  async checkLoginStatus(): boolean {
+  async checkLoginStatus(): Promise<boolean> {
     const token = wx.getStorageSync('userToken');
     if (!token) {
       wx.redirectTo({
@@ -35,7 +39,7 @@ Page({
       const token = wx.getStorageSync('userToken');
       const response = await new Promise<any>((resolve, reject) => {
         wx.request({
-          url: 'https://api.example.com/user/daily-usage',
+          url: API_URLS.USER_DAILY_USAGE,
           method: 'GET',
           header: {
             'Authorization': `Bearer ${token}`,
@@ -61,9 +65,9 @@ Page({
 
   // 选择图片
   chooseImage() {
-    if (this.data.todayUsage >= 3) {
+    if (this.data.todayUsage >= GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT) {
       wx.showToast({
-        title: '当天免费次数已用完，如需继续使用请充值！',
+        title: GLOBAL_CONFIG.MESSAGES.USAGE_LIMIT_EXCEEDED,
         icon: 'none',
         duration: 3000
       });
@@ -90,7 +94,7 @@ Page({
     this.setData({ isProcessing: true });
     
     wx.showLoading({
-      title: '正在处理...',
+      title: GLOBAL_CONFIG.MESSAGES.PROCESSING,
       mask: true
     });
     
@@ -122,7 +126,7 @@ Page({
     } catch (error) {
       console.error('图片处理失败:', error);
       wx.showToast({
-        title: '处理失败，请重试',
+        title: GLOBAL_CONFIG.MESSAGES.PROCESS_FAILURE,
         icon: 'none'
       });
     } finally {
@@ -151,14 +155,14 @@ Page({
       filePath: imageUrl,
       success: () => {
         wx.showToast({
-          title: '保存成功',
+          title: GLOBAL_CONFIG.MESSAGES.SAVE_SUCCESS,
           icon: 'success'
         });
       },
       fail: (error) => {
         console.error('保存图片失败:', error);
         wx.showToast({
-          title: '保存失败，请重试',
+          title: GLOBAL_CONFIG.MESSAGES.SAVE_FAILURE,
           icon: 'none'
         });
       }
