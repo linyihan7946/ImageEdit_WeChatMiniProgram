@@ -8,7 +8,10 @@ Component({
   data: {
     username: '',
     userAvatar: '',
-    filePath: ''
+    filePath: '',
+    originalImagePath: '', // 原始图片路径
+    processedImageUrl: '', // 处理后的图片URL
+    isShowingOriginal: false // 当前是否显示原始图片
   },
   
   lifetimes: {
@@ -44,6 +47,18 @@ Component({
         console.error('获取用户当天使用次数失败:', error);
         return 0;
       }
+    },
+
+    // 切换图片显示（长按事件）
+    onToggleImage() {
+      this.setData({
+        isShowingOriginal: !this.data.isShowingOriginal
+      });
+      wx.showToast({
+        title: this.data.isShowingOriginal ? '显示原图' : '显示处理后的图片',
+        icon: 'none',
+        duration: 1500
+      });
     },
 
     // 豆包出图去水印按钮点击事件
@@ -101,7 +116,17 @@ Component({
             
             if (editResult) {
               console.log('去水印后的图片URL:', editResult);
-              // 可以添加显示或保存处理后图片的逻辑
+              // 保存图片结果到状态中
+              this.setData({
+                originalImagePath: imagePath,
+                processedImageUrl: editResult,
+                isShowingOriginal: false // 默认显示处理后的图片
+              });
+              wx.hideLoading();
+              wx.showToast({
+                title: '处理完成',
+                icon: 'success'
+              });
             }
           } catch (error) {
             wx.hideLoading();
