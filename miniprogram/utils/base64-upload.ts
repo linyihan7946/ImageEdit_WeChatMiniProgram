@@ -1,12 +1,14 @@
 import { API_URLS } from '../config/api';
 import { imageToFullBase64 } from './image-util';
 
+const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB per chunk
+
 /**
  * Base64图片上传工具类
  * 用于处理图片上传到后端的逻辑，包括单块上传和分块上传
  */
 class Base64Uploader {
-  private CHUNK_SIZE: number = 2 * 1024 * 1024; // 2MB per chunk
+  
 
   /**
    * 上传图片Base64到后端
@@ -27,7 +29,7 @@ class Base64Uploader {
       // console.log('移除前缀后的Base64长度:', pureBase64.length);
       
       // 判断是否需要分块上传
-      if (pureBase64.length > this.CHUNK_SIZE) {
+      if (pureBase64.length > CHUNK_SIZE) {
         // 分块上传逻辑
         // console.log('Base64数据过大，启用分块上传');
         return await this.uploadBase64InChunks(pureBase64, imagePath);
@@ -78,7 +80,7 @@ class Base64Uploader {
       if (response.statusCode === 200 && response.data && typeof response.data === 'object' && 'success' in response.data && response.data.success) {
         return response.data;
       } else {
-        throw new Error((response.data as any)?.message || '上传失败');
+        throw new Error((response.data && typeof response.data === 'object' && (response.data as any).message) || '上传失败');
       }
     } catch (error) {
       console.error('单块上传失败:', error);
@@ -94,7 +96,7 @@ class Base64Uploader {
    */
   async uploadBase64InChunks(pureBase64: string, imagePath: string): Promise<any> {
     try {
-      const totalChunks = Math.ceil(pureBase64.length / this.CHUNK_SIZE);
+      const totalChunks = Math.ceil(pureBase64.length / CHUNK_SIZE);
       
       // 先生成一个文件ID用于标识本次上传
       const fileId = `chunk_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -106,8 +108,8 @@ class Base64Uploader {
 
       // 上传所有分块
       for (let i = 0; i < totalChunks; i++) {
-        const start = i * this.CHUNK_SIZE;
-        const end = Math.min(start + this.CHUNK_SIZE, pureBase64.length);
+        const start = i * CHUNK_SIZE;
+        const end = Math.min(start + CHUNK_SIZE, pureBase64.length);
         const chunkData = pureBase64.substring(start, end);
         
         console.log(`上传分块 ${i + 1}/${totalChunks}，大小: ${chunkData.length}`);
@@ -139,7 +141,7 @@ class Base64Uploader {
         console.log(`分块 ${i + 1} 上传响应:`, response);
         
         if (response.statusCode !== 200 || !response.data || !response.data.success) {
-          throw new Error(`分块 ${i + 1} 上传失败: ${(response.data as any)?.message || '未知错误'}`);
+          throw new Error(`分块 ${i + 1} 上传失败: ${(response.data && typeof response.data === 'object' && (response.data as any).message) || '未知错误'}`);
         }
       }
       
@@ -176,7 +178,7 @@ class Base64Uploader {
         });
         return mergeResponse.data;
       } else {
-        throw new Error((mergeResponse.data as any)?.message || '合并失败');
+        throw new Error((mergeResponse.data && typeof mergeResponse.data === 'object' && (mergeResponse.data as any).message) || '合并失败');
       }
     } catch (error) {
       console.error('分块上传失败:', error);

@@ -47,7 +47,9 @@ export const imageToFullBase64 = async (imagePath: string, mimeType?: string): P
     // 自动推断MIME类型
     if (!mimeType) {
       // 根据文件扩展名推断MIME类型
-      const extension = imagePath.split('.').pop()?.toLowerCase();
+      const parts = imagePath.split('.');
+      const lastPart = parts.pop();
+      const extension = lastPart ? lastPart.toLowerCase() : undefined;
       if (extension === 'jpg' || extension === 'jpeg') {
         mimeType = 'image/jpeg';
       } else if (extension === 'png') {

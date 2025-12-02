@@ -40,7 +40,7 @@ class ImageEditUtil {
           } else {
             resolve({
               success: false,
-              error: '图片编辑失败: ' + (data?.message || '未知错误')
+              error: '图片编辑失败: ' + (data && typeof data === 'object' && data.message || '未知错误')
             });
           }
         },
@@ -91,7 +91,7 @@ class ImageEditUtil {
           } else {
             resolve({
               success: false,
-              error: '图片编辑失败: ' + (data?.message || '未知错误')
+              error: '图片编辑失败: ' + (data && typeof data === 'object' && data.message || '未知错误')
             });
           }
         },
@@ -124,7 +124,7 @@ class ImageEditUtil {
 
       wx.hideLoading();
 
-      if (result.success && result.data?.images && result.data.images.length > 0) {
+      if (result.success && result.data && typeof result.data === 'object' && result.data.images && result.data.images.length > 0) {
         wx.showToast({
           title: '图片编辑成功',
           icon: 'success'

@@ -1,5 +1,5 @@
 // API接口配置文件
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'http://119.29.233.6:3000'; // 'http://localhost:3000';
 
 export const API_URLS = {
   // 基础URL
