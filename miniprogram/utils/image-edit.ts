@@ -62,7 +62,7 @@ class ImageEditUtil {
    * @param instruction 编辑指令
    * @returns Promise<{ success: boolean; data?: any; error?: string }>
    */
-  static async editImageNew(imageUrl: string, instruction: string = '将下面的手绘图变成漂亮的水彩画图'): Promise<{ 
+  static async editImageNew(imageUrl: string, instruction: string, aspectRatio: string): Promise<{ 
     success: boolean; 
     data?: any; 
     error?: string 
@@ -79,7 +79,8 @@ class ImageEditUtil {
         },
         data: {
           instruction,
-          imageUrls: [imageUrl]
+          imageUrls: [imageUrl],
+          aspectRatio
         },
         success: (res) => {
           const data: any = res.data;
@@ -113,14 +114,16 @@ class ImageEditUtil {
    * @param instruction 编辑指令
    * @returns Promise<string | null> 编辑后的图片URL，失败返回null
    */
-  static async processAndShowEditResult(imageUrl: string, instruction?: string): Promise<string | null> {
+  static async processAndShowEditResult(imageUrl: string, instruction: string, aspectRatio: string = '16:9'): Promise<string | null> {
     try {
       wx.showLoading({
         title: '图片编辑中...',
         mask: true
       });
 
-      const result = await ImageEditUtil.editImage(imageUrl, instruction);
+      // const result = await ImageEditUtil.editImage(imageUrl, instruction);
+      const result = await ImageEditUtil.editImageNew(imageUrl, instruction, aspectRatio);
+    
 
       wx.hideLoading();
 
