@@ -1,7 +1,7 @@
 <!-- login.wxml -->
 <view class="container">
   <view class="header">
-    <text class="title">欢迎使用手绘变彩图</text>
+    <text class="title">欢迎使用水印克星</text>
     <text class="subtitle">微信一键登录，快速开始使用</text>
   </view>
   
