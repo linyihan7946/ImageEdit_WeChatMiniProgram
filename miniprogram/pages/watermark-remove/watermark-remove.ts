@@ -150,9 +150,59 @@ Page({
   // 保存处理后的图片
   saveImage() {
     const imageUrl = this.data.isShowingOriginal ? this.data.originalImagePath : this.data.processedImageUrl;
-    
+
+    wx.downloadFile({
+      url: imageUrl,
+      success: (res) => {
+        const tempFilePath = res.tempFilePath;
+        // 先检查用户是否授权保存图片到相册
+        wx.getSetting({
+          success: (res) => {
+            // 如果没有授权，则请求授权
+            if (!res.authSetting['scope.writePhotosAlbum']) {
+              wx.authorize({
+                scope: 'scope.writePhotosAlbum',
+                success: () => {
+                  // 授权成功后保存图片
+                  this.saveImageToAlbum(tempFilePath);
+                },
+                fail: (authError) => {
+                  console.error('授权失败:', authError);
+                  // 如果用户拒绝授权，提示用户手动开启
+                  wx.showModal({
+                    title: '保存失败',
+                    content: '需要您授权保存图片到相册，请在设置中开启权限',
+                    confirmText: '去设置',
+                    success: (modalRes) => {
+                      if (modalRes.confirm) {
+                        // 打开设置页面让用户手动授权
+                        wx.openSetting();
+                      }
+                    }
+                  });
+                }
+              });
+            } else {
+              // 已经授权，直接保存图片
+              this.saveImageToAlbum(tempFilePath);
+            }
+          },
+          fail: (error) => {
+            console.error('获取设置失败:', error);
+            wx.showToast({
+              title: '保存失败',
+              icon: 'none'
+            });
+          }
+        });
+      }
+    })
+  },
+  
+  // 保存图片到相册的具体实现
+  saveImageToAlbum(filePath: string) {
     wx.saveImageToPhotosAlbum({
-      filePath: imageUrl,
+      filePath: filePath,
       success: () => {
         wx.showToast({
           title: GLOBAL_CONFIG.MESSAGES.SAVE_SUCCESS,
@@ -160,7 +210,7 @@ Page({
         });
       },
       fail: (error) => {
-        console.error('保存图片失败:', error);
+        console.error('保存图片到相册失败:', error);
         wx.showToast({
           title: GLOBAL_CONFIG.MESSAGES.SAVE_FAILURE,
           icon: 'none'
