@@ -135,7 +135,31 @@ Page({
     }
   },
 
-  // 切换图片显示（长按事件）
+  // 长按显示原图
+  onShowOriginal() {
+    this.setData({
+      isShowingOriginal: true
+    });
+    wx.showToast({
+      title: '显示原图',
+      icon: 'none',
+      duration: 1000
+    });
+  },
+
+  // 松开按钮显示处理后的图片
+  onShowProcessed() {
+    this.setData({
+      isShowingOriginal: false
+    });
+    wx.showToast({
+      title: '显示处理后的图片',
+      icon: 'none',
+      duration: 1000
+    });
+  },
+
+  // 切换图片显示（兼容旧的长按事件）
   onToggleImage() {
     this.setData({
       isShowingOriginal: !this.data.isShowingOriginal

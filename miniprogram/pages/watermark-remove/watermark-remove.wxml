@@ -10,17 +10,19 @@
 
   <!-- 图片显示区域 -->
   <view class="image-display-area" wx:if="{{processedImageUrl || originalImagePath}}">
-    <view class="image-container" bindlongtap="onToggleImage">
+    <view class="image-container">
       <image 
         class="result-image" 
         src="{{isShowingOriginal ? originalImagePath : processedImageUrl}}" 
         mode="aspectFit"
       ></image>
-      <view class="image-hint">长按切换图片</view>
       <view class="image-status">{{isShowingOriginal ? '当前显示：原图' : '当前显示：处理后的图片'}}</view>
     </view>
     
-    <!-- 保存按钮 -->
-    <button class="save-button" bindtap="saveImage">保存图片</button>
+    <!-- 操作按钮区域 -->
+    <view class="button-area">
+      <button class="toggle-button" bindlongpress="onShowOriginal" bindtouchend="onShowProcessed">长按显示原图</button>
+      <button class="save-button" bindtap="saveImage">保存图片</button>
+    </view>
   </view>
 </view>

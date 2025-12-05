@@ -113,6 +113,31 @@ page {
   border-radius: 20rpx;
 }
 
+/* 按钮区域样式 */
+.button-area {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+/* 切换按钮样式 */
+.toggle-button {
+  background-color: #4A90E2;
+  color: white;
+  font-size: 26rpx;
+  padding: 15rpx 20rpx;
+  border-radius: 44rpx;
+  line-height: normal;
+  height: 80rpx;
+  min-height: 80rpx;
+  flex: 1;
+}
+
+.toggle-button::after {
+  border: none;
+}
+
 /* 保存按钮样式 */
 .save-button {
   background-color: #FF9500;
@@ -123,9 +148,7 @@ page {
   line-height: normal;
   height: 80rpx;
   min-height: 80rpx;
-  margin: 0 auto;
-  display: block;
-  width: 60%;
+  flex: 1;
 }
 
 .save-button::after {
