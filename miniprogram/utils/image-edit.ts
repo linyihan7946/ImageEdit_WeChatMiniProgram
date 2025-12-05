@@ -73,6 +73,7 @@ class ImageEditUtil {
       wx.request({
         url: API_URLS.IMAGE_EDIT_NEW,
         method: 'POST',
+        timeout: 120000, // 超时时间设置为120秒
         header: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
