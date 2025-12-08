@@ -3,17 +3,6 @@
   <!-- 标题 -->
   <view class="title">创意图片编辑</view>
 
-  <!-- 提示词输入区 -->
-  <view class="prompt-area">
-    <text class="prompt-label">图片生成提示词</text>
-    <textarea 
-      class="prompt-input" 
-      placeholder="请输入您想要生成的图片描述" 
-      value="{{prompt}}" 
-      bindinput="onPromptInput"
-    ></textarea>
-  </view>
-
   <!-- 图片上传区 -->
   <view class="image-upload-area">
     <text class="upload-label">添加图片（最多10张）</text>
@@ -34,6 +23,17 @@
       </view>
     </view>
     <text class="image-count">{{imageUrls.length}}/10</text>
+  </view>
+
+  <!-- 提示词输入区 -->
+  <view class="prompt-area">
+    <text class="prompt-label">图片生成提示词</text>
+    <textarea 
+      class="prompt-input" 
+      placeholder="请输入您想要生成的图片描述" 
+      value="{{prompt}}" 
+      bindinput="onPromptInput"
+    ></textarea>
   </view>
 
   <!-- 生成按钮 -->

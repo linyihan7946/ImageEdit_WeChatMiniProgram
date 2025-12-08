@@ -1,15 +1,17 @@
 /* creative-image-edit.wxss */
 .container {
-  padding: 20rpx;
+  padding: 0;
   background-color: #f5f5f5;
   min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .title {
   font-size: 36rpx;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 30rpx;
+  margin-bottom: 15rpx;
   color: #333;
 }
 
@@ -17,8 +19,10 @@
   background-color: #fff;
   border-radius: 10rpx;
   padding: 20rpx;
-  margin-bottom: 20rpx;
+  margin: 0 20rpx 0rpx 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  width: calc(100% - 40rpx);
+  box-sizing: border-box;
 }
 
 .prompt-label {
@@ -30,7 +34,7 @@
 
 .prompt-input {
   width: 100%;
-  height: 150rpx;
+  height: 120rpx;
   border: 1rpx solid #ddd;
   border-radius: 8rpx;
   padding: 15rpx;
@@ -42,8 +46,13 @@
   background-color: #fff;
   border-radius: 10rpx;
   padding: 20rpx;
-  margin-bottom: 20rpx;
+  margin: 20rpx 20rpx 0rpx 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  width: calc(100% - 40rpx);
+  height: 60vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .upload-label {
@@ -58,11 +67,13 @@
   flex-wrap: wrap;
   gap: 15rpx;
   margin-bottom: 10rpx;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .image-item {
-  width: 150rpx;
-  height: 150rpx;
+  width: 200rpx;
+  height: 200rpx;
   position: relative;
 }
 
@@ -74,7 +85,7 @@
 
 .remove-image {
   position: absolute;
-  top: -10rpx;
+  top: 5rpx;
   right: -10rpx;
   width: 30rpx;
   height: 30rpx;
@@ -92,8 +103,8 @@
 }
 
 .add-image {
-  width: 150rpx;
-  height: 150rpx;
+  width: 200rpx;
+  height: 200rpx;
   border: 2rpx dashed #ddd;
   border-radius: 8rpx;
   display: flex;
@@ -119,14 +130,14 @@
 }
 
 .generate-button {
-  width: 100%;
+  width: calc(100% - 40rpx);
   height: 80rpx;
   background-color: #07c160;
   color: #fff;
   border-radius: 40rpx;
   font-size: 32rpx;
   font-weight: bold;
-  margin-bottom: 20rpx;
+  margin: 0 20rpx 20rpx 20rpx;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -140,7 +151,10 @@
   background-color: #fff;
   border-radius: 10rpx;
   padding: 20rpx;
+  margin: 0 20rpx 20rpx 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  width: calc(100% - 40rpx);
+  box-sizing: border-box;
 }
 
 .result-label {
@@ -167,4 +181,5 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
 }
