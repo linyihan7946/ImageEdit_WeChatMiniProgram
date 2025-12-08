@@ -1,0 +1,55 @@
+<!-- creative-image-edit.wxml -->
+<view class="container">
+  <!-- 标题 -->
+  <view class="title">创意图片编辑</view>
+
+  <!-- 提示词输入区 -->
+  <view class="prompt-area">
+    <text class="prompt-label">图片生成提示词</text>
+    <textarea 
+      class="prompt-input" 
+      placeholder="请输入您想要生成的图片描述" 
+      value="{{prompt}}" 
+      bindinput="onPromptInput"
+    ></textarea>
+  </view>
+
+  <!-- 图片上传区 -->
+  <view class="image-upload-area">
+    <text class="upload-label">添加图片（最多10张）</text>
+    <view class="image-list">
+      <!-- 已添加的图片 -->
+      <block wx:for="{{imageUrls}}" wx:key="index">
+        <view class="image-item">
+          <image class="uploaded-image" src="{{item}}" mode="aspectFill"></image>
+          <view class="remove-image" bindtap="onRemoveImage" data-index="{{index}}">
+            <text class="remove-icon">×</text>
+          </view>
+        </view>
+      </block>
+      <!-- 添加图片按钮 -->
+      <view class="add-image" bindtap="onChooseImage" wx:if="{{imageUrls.length < 10}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+    <text class="image-count">{{imageUrls.length}}/10</text>
+  </view>
+
+  <!-- 生成按钮 -->
+  <button 
+    class="generate-button" 
+    bindtap="onGenerateImage" 
+    loading="{{isGenerating}}"
+    disabled="{{isGenerating || !prompt || imageUrls.length === 0}}"
+  >
+    {{isGenerating ? '生成中...' : '生成图片'}}
+  </button>
+
+  <!-- 结果显示区 -->
+  <view class="result-area" wx:if="{{generatedImageUrl}}">
+    <text class="result-label">生成结果</text>
+    <image class="generated-image" src="{{generatedImageUrl}}" mode="aspectFit"></image>
+    <button class="save-button" bindtap="onSaveImage">保存图片</button>
+  </view>
+</view>

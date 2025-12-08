@@ -23,4 +23,7 @@ export const API_URLS = {
 
   // 用户当天使用次数接口
   USER_DAILY_USAGE: `${API_BASE_URL}/api/user/today-usage`,
+
+  // Gemini图片生成接口
+  GEMINI_IMAGE_GENERATE: `${API_BASE_URL}/gemini-image-generate`,
 };

@@ -96,6 +96,23 @@ page {
   opacity: 0.8;
 }
 
+.creative-edit-button {
+  height: 100rpx;
+  background-color: #FF6B6B;
+  color: white;
+  font-size: 36rpx;
+  font-weight: bold;
+  border-radius: 50rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(255, 107, 107, 0.3);
+}
+
+.creative-edit-button:active {
+  opacity: 0.8;
+}
+
 .colorize-button {
   height: 100rpx;
   background-color: #07C160;

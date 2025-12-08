@@ -88,6 +88,32 @@ Component({
       });
     },
     
+    // 创意图片编辑按钮点击事件
+    async onCreativeImageEdit() {
+      console.log('创意图片编辑按钮被点击');
+      
+      // 检查登录状态
+      const isLoggedIn = await this.checkLoginStatus();
+      if (!isLoggedIn) {
+        return;
+      }
+      
+      // 跳转到创意图片编辑页面
+      wx.navigateTo({
+        url: '/pages/creative-image-edit/creative-image-edit',
+        success: () => {
+          console.log('成功跳转到创意图片编辑页面');
+        },
+        fail: (error) => {
+          console.error('跳转到创意图片编辑页面失败:', error);
+          wx.showToast({
+            title: '页面跳转失败，请重试',
+            icon: 'none'
+          });
+        }
+      });
+    },
+    
     // 检查登录状态并获取用户信息
     checkLoginStatus(): boolean {
       const token = wx.getStorageSync('userToken');

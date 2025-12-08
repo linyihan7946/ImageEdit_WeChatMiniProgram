@@ -3,6 +3,7 @@
     "pages/login/login",
     "pages/index/index",
     "pages/watermark-remove/watermark-remove",
+    "pages/creative-image-edit/creative-image-edit",
     "pages/logs/logs"
   ],
   "window": {
