@@ -8,6 +8,7 @@ Page({
     imageUrls: [] as string[], // 已添加的图片URL数组
     isGenerating: false, // 是否正在生成图片
     generatedImageUrl: '', // 生成的图片URL
+    showPreviewModal: false, // 是否显示预览弹框
   },
 
   // 页面加载时
@@ -132,16 +133,26 @@ Page({
             prompt: this.data.prompt,
             imageUrls: this.data.imageUrls
           },
+          timeout: 300000, // 设置超时时间为300秒
           success: resolve,
           fail: reject
         });
       });
 
       if (response.statusCode === 200 && response.data && response.data.success) {
-        const generatedImageUrl = response.data.data.imageUrl;
+        let generatedImageUrl = response.data.data.imageUrl;
+        console.log('Generated image URL:', generatedImageUrl);
+        
+        // 确保URL格式正确
+        if (generatedImageUrl && !generatedImageUrl.startsWith('http')) {
+          console.log('URL格式不正确，添加基础URL');
+          generatedImageUrl = API_URLS.API_BASE_URL + '/' + generatedImageUrl;
+          console.log('修正后的URL:', generatedImageUrl);
+        }
         
         this.setData({
-          generatedImageUrl
+          generatedImageUrl,
+          showPreviewModal: true
         });
 
         wx.hideLoading();
@@ -149,6 +160,8 @@ Page({
           title: '图片生成成功',
           icon: 'success'
         });
+        console.log('Preview modal shown:', this.data.showPreviewModal);
+        console.log('Current generatedImageUrl:', this.data.generatedImageUrl);
       } else {
         wx.hideLoading();
         wx.showToast({
@@ -170,7 +183,21 @@ Page({
     }
   },
 
-  // 保存图片
+  // 打开预览弹框
+  onOpenPreviewModal() {
+    this.setData({
+      showPreviewModal: true
+    });
+  },
+
+  // 关闭预览弹框
+  onClosePreviewModal() {
+    this.setData({
+      showPreviewModal: false
+    });
+  },
+
+  // 保存图片到相册
   onSaveImage() {
     if (!this.data.generatedImageUrl) {
       wx.showToast({
@@ -195,6 +222,7 @@ Page({
               title: '保存成功',
               icon: 'success'
             });
+            this.onClosePreviewModal();
           },
           fail: (err) => {
             wx.hideLoading();
