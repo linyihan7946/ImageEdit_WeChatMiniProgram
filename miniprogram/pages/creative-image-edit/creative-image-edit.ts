@@ -140,15 +140,12 @@ Page({
       });
 
       if (response.statusCode === 200 && response.data && response.data.success) {
-        let generatedImageUrl = response.data.data.imageUrl;
-        console.log('Generated image URL:', generatedImageUrl);
-        
-        // 确保URL格式正确
-        if (generatedImageUrl && !generatedImageUrl.startsWith('http')) {
-          console.log('URL格式不正确，添加基础URL');
-          generatedImageUrl = API_URLS.API_BASE_URL + '/' + generatedImageUrl;
-          console.log('修正后的URL:', generatedImageUrl);
+        const images = response.data.data.images || [];
+        let generatedImageUrl = '';
+        if (images && images.length > 0) {
+          generatedImageUrl = images[0];
         }
+        console.log('Generated image URL:', generatedImageUrl);
         
         this.setData({
           generatedImageUrl,
