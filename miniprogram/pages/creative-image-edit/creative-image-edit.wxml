@@ -46,12 +46,6 @@
     {{isGenerating ? '生成中...' : '生成图片'}}
   </button>
 
-  <!-- 结果显示区 -->
-  <view class="result-area" wx:if="{{generatedImageUrl}}">
-    <text class="result-label">生成结果</text>
-    <image class="generated-image" src="{{generatedImageUrl}}" mode="aspectFit" bindtap="onOpenPreviewModal"></image>
-  </view>
-
   <!-- 预览弹框 -->
   <view class="modal-overlay" wx:if="{{showPreviewModal}}" bindtap="onClosePreviewModal"></view>
   <view class="modal-content" wx:if="{{showPreviewModal && generatedImageUrl}}">
