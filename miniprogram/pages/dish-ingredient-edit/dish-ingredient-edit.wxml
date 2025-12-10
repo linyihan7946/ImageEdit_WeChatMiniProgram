@@ -7,7 +7,6 @@
   <view class="main-content">
     <!-- 选中图片预览区域 -->
     <view class="selected-image-area">
-      <text class="section-title">选中的图片</text>
       <image class="selected-image" src="{{generatedImageUrl}}" mode="aspectFit"></image>
     </view>
     
@@ -15,6 +14,11 @@
     <view class="image-selection-area">
       <button class="select-image-btn" bindtap="onSelectImage">生成用料图</button>
       <text class="hint">从相册选择一张菜品图片</text>
+    </view>
+    
+    <!-- 保存图片按钮 -->
+    <view class="save-button-area" wx:if="{{generatedImageUrl}}">
+      <button class="save-btn" bindtap="onSaveImage">保存结果图片</button>
     </view>
   </view>
 </view>

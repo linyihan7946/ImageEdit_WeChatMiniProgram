@@ -54,16 +54,16 @@ Component({
       }
       
       try {
-        wx.showLoading({
-          title: '生成图片中...',
-        });
-        
         // 上传图片到后端
         const uploadResult = await uploadImageToBackend(this.data.selectedImagePath);
         const imageUrl = uploadResult.data.fileUrl;
         console.log('图片上传成功:', imageUrl);
         // 使用从配置获取的参考图链接，如果没有则使用空字符串
         const imageUrls = [imageUrl, GLOBAL_CONFIG.dishIngredientReferenceImage || ""];
+
+        wx.showLoading({
+          title: '生成图片中...',
+        });
         
         // 调用GEMINI_IMAGE_GENERATE接口生成用料图
         const prompt = '根据图1的菜，生成类似图2的这个菜的食材跟调料用量图。';
@@ -87,6 +87,7 @@ Component({
             fail: reject
           });
         });
+        console.log("后端结果返回")
         if (response.statusCode === 200 && response.data && response.data.success) {
           const images = response.data.data.images || [];
           let generatedImageUrl = '';
@@ -95,30 +96,40 @@ Component({
           }
           console.log('Generated image URL:', generatedImageUrl);
           
+          // 先隐藏加载框
+          wx.hideLoading();
+          
+          // 然后更新数据显示图片
           this.setData({
             generatedImageUrl
           });
+          
+          // 最后显示成功提示
           wx.showToast({
             title: '图片生成成功',
             icon: 'success'
           });
-          wx.hideLoading();
-          console.log('Preview modal shown:', this.data.showPreviewModal);
+          
           console.log('Current generatedImageUrl:', this.data.generatedImageUrl);
         } else {
+          // 先隐藏加载框
+          wx.hideLoading();
+          
+          // 然后显示失败提示
           wx.showToast({
             title: response.data?.message || '图片生成失败',
             icon: 'none'
           });
-          wx.hideLoading();
         }
       } catch (error) {
         console.error('生成图片失败:', error);
+        // 先隐藏加载框
+        wx.hideLoading();
+        // 然后显示失败提示
         wx.showToast({
           title: '生成图片失败，请重试',
           icon: 'none'
         });
-        wx.hideLoading();
       }
     },
     

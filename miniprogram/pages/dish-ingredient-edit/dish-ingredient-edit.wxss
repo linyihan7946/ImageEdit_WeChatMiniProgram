@@ -166,8 +166,15 @@
   margin-top: 10rpx;
 }
 
+.save-button-area {
+  margin-top: 20rpx;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .save-btn {
-  width: 200rpx;
+  width: 280rpx;
   height: 70rpx;
   background-color: #07c160;
   color: white;
