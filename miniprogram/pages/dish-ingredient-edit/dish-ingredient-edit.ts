@@ -6,9 +6,7 @@ import GLOBAL_CONFIG from '../../config/config';
 Component({
   data: {
     selectedImagePath: '', // 选中的图片路径
-    generatedImageUrl: '', // 生成的图片URL
-    showPreviewModal: false, // 是否显示预览弹框
-    isGenerating: false, // 是否正在生成图片
+    generatedImageUrl: '' // 生成的图片URL
   },
   
   lifetimes: {
@@ -30,9 +28,10 @@ Component({
           const tempFilePath = res.tempFiles[0].tempFilePath;
           this.setData({
             selectedImagePath: tempFilePath,
-            generatedImageUrl: '', // 清空之前的生成结果
-            showPreviewModal: false // 关闭预览弹框
+            generatedImageUrl: '' // 清空之前的生成结果
           });
+          // 选择图片后直接生成用料图
+          this.onGenerateImage();
         },
         fail: (error) => {
           console.error('选择图片失败:', error);
@@ -54,12 +53,9 @@ Component({
         return;
       }
       
-      this.setData({ isGenerating: true });
-      
       try {
         wx.showLoading({
-          title: '正在生成图片...',
-          mask: true
+          title: '生成图片中...',
         });
         
         // 上传图片到后端
@@ -100,42 +96,33 @@ Component({
           console.log('Generated image URL:', generatedImageUrl);
           
           this.setData({
-            generatedImageUrl,
-            showPreviewModal: true
+            generatedImageUrl
           });
-
-          wx.hideLoading();
           wx.showToast({
             title: '图片生成成功',
             icon: 'success'
           });
+          wx.hideLoading();
           console.log('Preview modal shown:', this.data.showPreviewModal);
           console.log('Current generatedImageUrl:', this.data.generatedImageUrl);
         } else {
-          wx.hideLoading();
           wx.showToast({
             title: response.data?.message || '图片生成失败',
             icon: 'none'
           });
+          wx.hideLoading();
         }
       } catch (error) {
         console.error('生成图片失败:', error);
-        wx.hideLoading();
         wx.showToast({
           title: '生成图片失败，请重试',
           icon: 'none'
         });
-      } finally {
-        this.setData({ isGenerating: false });
+        wx.hideLoading();
       }
     },
     
-    // 关闭预览弹框
-    onClosePreviewModal() {
-      this.setData({
-        showPreviewModal: false
-      });
-    },
+
     
     // 保存图片到相册
     onSaveImage() {
@@ -162,7 +149,6 @@ Component({
                   title: '保存成功',
                   icon: 'success'
                 });
-                this.onClosePreviewModal();
               },
               fail: (error) => {
                 wx.hideLoading();
