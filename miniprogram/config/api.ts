@@ -26,4 +26,7 @@ export const API_URLS = {
 
   // Gemini图片生成接口
   GEMINI_IMAGE_GENERATE: `${API_BASE_URL}/gemini-image-generate`,
+
+  // 获取配置信息接口
+  GET_CONFIG: `${API_BASE_URL}/api/config`,
 };

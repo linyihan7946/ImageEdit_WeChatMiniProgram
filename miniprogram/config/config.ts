@@ -40,7 +40,10 @@ export const GLOBAL_CONFIG = {
     LOGIN_REQUIRED: '请先登录',
     SAVE_SUCCESS: '保存成功',
     SAVE_FAILURE: '保存失败，请重试'
-  }
+  },
+  
+  // 菜品用料图参考图
+  dishIngredientReferenceImage: '' 
 };
 
 // 导出默认配置
