@@ -113,6 +113,23 @@ page {
   opacity: 0.8;
 }
 
+.dish-ingredient-button {
+  height: 100rpx;
+  background-color: #2E7D32;
+  color: white;
+  font-size: 36rpx;
+  font-weight: bold;
+  border-radius: 50rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(46, 125, 50, 0.3);
+}
+
+.dish-ingredient-button:active {
+  opacity: 0.8;
+}
+
 .colorize-button {
   height: 100rpx;
   background-color: #07C160;

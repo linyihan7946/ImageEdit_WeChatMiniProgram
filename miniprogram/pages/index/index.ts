@@ -114,6 +114,32 @@ Component({
       });
     },
     
+    // 菜品食材用料图按钮点击事件
+    async onDishIngredientEdit() {
+      console.log('菜品食材用料图按钮被点击');
+      
+      // 检查登录状态
+      const isLoggedIn = await this.checkLoginStatus();
+      if (!isLoggedIn) {
+        return;
+      }
+      
+      // 跳转到菜品食材用料图页面
+      wx.navigateTo({
+        url: '/pages/dish-ingredient-edit/dish-ingredient-edit',
+        success: () => {
+          console.log('成功跳转到菜品食材用料图页面');
+        },
+        fail: (error) => {
+          console.error('跳转到菜品食材用料图页面失败:', error);
+          wx.showToast({
+            title: '页面跳转失败，请重试',
+            icon: 'none'
+          });
+        }
+      });
+    },
+    
     // 检查登录状态并获取用户信息
     checkLoginStatus(): boolean {
       const token = wx.getStorageSync('userToken');

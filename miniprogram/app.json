@@ -4,6 +4,7 @@
     "pages/index/index",
     "pages/watermark-remove/watermark-remove",
     "pages/creative-image-edit/creative-image-edit",
+    "pages/dish-ingredient-edit/dish-ingredient-edit",
     "pages/logs/logs"
   ],
   "window": {

@@ -1,0 +1,42 @@
+<!--dish-ingredient-edit.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">菜品食材用料图</text>
+  </view>
+  
+  <view class="main-content">
+    <!-- 选中图片预览区域 -->
+    <view class="selected-image-area">
+      <text class="section-title">选中的图片</text>
+      <image class="selected-image" src="{{selectedImagePath}}" mode="aspectFit"></image>
+    </view>
+    
+    <!-- 图片选择区域 -->
+    <view class="image-selection-area">
+      <button class="select-image-btn" bindtap="onSelectImage">选择图片</button>
+      <text class="hint">从相册选择一张菜品图片</text>
+    </view>
+    
+    <!-- 操作按钮区域 -->
+    <view class="action-buttons">
+      <button class="generate-btn" bindtap="onGenerateImage" disabled="{{!selectedImagePath || isGenerating}}">
+        {{isGenerating ? '生成中...' : '生成用料图'}}
+      </button>
+    </view>
+  </view>
+  
+  <!-- 图片预览弹框 -->
+  <view class="modal-overlay" hidden="{{!showPreviewModal}}" bindtap="onClosePreviewModal"></view>
+  <view class="modal-content" hidden="{{!showPreviewModal || !generatedImageUrl}}">
+    <view class="modal-header">
+      <text class="modal-title">生成结果</text>
+      <button class="close-btn" bindtap="onClosePreviewModal">×</button>
+    </view>
+    <view class="modal-body">
+      <image class="preview-image" src="{{generatedImageUrl}}" mode="aspectFit"></image>
+    </view>
+    <view class="modal-footer">
+      <button class="save-btn" bindtap="onSaveImage">保存图片</button>
+    </view>
+  </view>
+</view>
