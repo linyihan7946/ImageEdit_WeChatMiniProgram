@@ -27,4 +27,12 @@
       <view class="image-status">{{isShowingOriginal ? '当前显示：原图' : '当前显示：处理后的图片'}}</view>
     </view>
   </view>
+  
+  <!-- 右下角剩余次数显示 -->
+  <view class="bottom-right-count">
+    <view class="remaining-count">
+      <text class="count-label">剩余次数：</text>
+      <text class="count-value">{{remainingCount}}</text>
+    </view>
+  </view>
 </view>

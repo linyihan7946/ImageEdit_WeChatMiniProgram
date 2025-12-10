@@ -12,13 +12,16 @@ Component({
     filePath: '',
     originalImagePath: '', // 原始图片路径
     processedImageUrl: '', // 处理后的图片URL
-    isShowingOriginal: false // 当前是否显示原始图片
+    isShowingOriginal: false, // 当前是否显示原始图片
+    remainingCount: 0 // 剩余图片编辑次数
   },
   
   lifetimes: {
     attached() {
       // 组件挂载时检查登录状态并获取用户信息
       this.checkLoginStatus();
+      // 获取并显示剩余编辑次数
+      this.updateRemainingCount();
     }
   },
   
@@ -49,6 +52,52 @@ Component({
         return 0;
       }
     },
+    
+    // 检查当天剩余图片编辑次数
+    async checkRemainingEditCount(): Promise<boolean> {
+      try {
+        const todayUsage = await this.getUserDailyUsage();
+        const remainingCount = GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT - todayUsage;
+        console.log('当天已使用次数:', todayUsage, '剩余次数:', remainingCount);
+        
+        // 更新显示的剩余次数
+        this.setData({
+          remainingCount: remainingCount
+        });
+        
+        if (remainingCount <= 0) {
+          wx.showToast({
+            title: GLOBAL_CONFIG.MESSAGES.USAGE_LIMIT_EXCEEDED,
+            icon: 'none',
+            duration: 3000
+          });
+          return false;
+        }
+        return true;
+      } catch (error) {
+        console.error('检查剩余编辑次数失败:', error);
+        // 发生错误时默认允许跳转，避免影响用户体验
+        return true;
+      }
+    },
+    
+    // 更新剩余编辑次数并显示
+    async updateRemainingCount() {
+      try {
+        const todayUsage = await this.getUserDailyUsage();
+        const remainingCount = GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT - todayUsage;
+        console.log('更新剩余次数显示:', remainingCount);
+        this.setData({
+          remainingCount: remainingCount
+        });
+      } catch (error) {
+        console.error('更新剩余次数失败:', error);
+        // 发生错误时默认显示最大值
+        this.setData({
+          remainingCount: GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT
+        });
+      }
+    },
 
     // 切换图片显示（长按事件）
     onToggleImage() {
@@ -69,6 +118,12 @@ Component({
       // 检查登录状态
       const isLoggedIn = await this.checkLoginStatus();
       if (!isLoggedIn) {
+        return;
+      }
+      
+      // 检查剩余编辑次数
+      const hasRemainingCount = await this.checkRemainingEditCount();
+      if (!hasRemainingCount) {
         return;
       }
 
@@ -98,6 +153,12 @@ Component({
         return;
       }
       
+      // 检查剩余编辑次数
+      const hasRemainingCount = await this.checkRemainingEditCount();
+      if (!hasRemainingCount) {
+        return;
+      }
+      
       // 跳转到创意图片编辑页面
       wx.navigateTo({
         url: '/pages/creative-image-edit/creative-image-edit',
@@ -121,6 +182,12 @@ Component({
       // 检查登录状态
       const isLoggedIn = await this.checkLoginStatus();
       if (!isLoggedIn) {
+        return;
+      }
+      
+      // 检查剩余编辑次数
+      const hasRemainingCount = await this.checkRemainingEditCount();
+      if (!hasRemainingCount) {
         return;
       }
       
@@ -234,15 +301,9 @@ Component({
         return;
       }
 
-      // 检查今日使用次数
-      const todayUsage = await this.getUserDailyUsage();
-      console.log('用户当天使用次数:', todayUsage);
-      if (todayUsage >= GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT) {
-        wx.showToast({
-          title: '当天免费次数已用完，如需继续使用请充值！',
-          icon: 'none',
-          duration: 3000
-        });
+      // 检查剩余编辑次数
+      const hasRemainingCount = await this.checkRemainingEditCount();
+      if (!hasRemainingCount) {
         return;
       }
 

@@ -21,6 +21,33 @@ page {
   align-items: center;
 }
 
+.bottom-right-count {
+  position: fixed;
+  bottom: 40rpx;
+  right: 40rpx;
+  z-index: 100;
+}
+
+.remaining-count {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 20rpx;
+  background-color: #f0f0f0;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+}
+
+.count-label {
+  color: #666;
+}
+
+.count-value {
+  color: #07c160;
+  font-weight: bold;
+  font-size: 28rpx;
+}
+
 .user-info {
   display: flex;
   align-items: center;
