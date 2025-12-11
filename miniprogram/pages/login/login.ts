@@ -16,7 +16,7 @@ Page({
     const token = wx.getStorageSync('userToken');
     if (token) {
       // 如果有token，直接跳转到首页
-      wx.redirectTo({
+      wx.switchTab({
         url: '/pages/index/index',
         success: () => {
           console.log('已登录，自动跳转首页');
@@ -71,7 +71,7 @@ Page({
 
           // 登录成功后跳转到首页
           setTimeout(() => {
-            wx.redirectTo({
+            wx.switchTab({
               url: '/pages/index/index',
               success: () => {
                 console.log('登录成功，跳转首页');

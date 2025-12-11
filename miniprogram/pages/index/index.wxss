@@ -11,6 +11,7 @@ page {
   display: flex;
   flex-direction: column;
   padding: 20rpx;
+  padding-bottom: 100rpx; /* 为底部导航栏预留空间 */
 }
 
 .header {
@@ -23,7 +24,7 @@ page {
 
 .bottom-right-count {
   position: fixed;
-  bottom: 40rpx;
+  bottom: 120rpx; /* 调整位置，避免被底部导航栏遮挡 */
   right: 40rpx;
   z-index: 100;
 }
