@@ -49,7 +49,8 @@ Page({
     // 模拟获取剩余次数
     const usedCount = wx.getStorageSync('usedCount') || 0;
     const totalCount = 5;
-    const remainingCount = Math.max(0, totalCount - usedCount);
+    const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
+    const remainingCount = Math.max(0, totalCount + purchasedCount - usedCount);
 
     this.setData({
       remainingCount
@@ -57,10 +58,8 @@ Page({
   },
 
   onRecharge() {
-    wx.showModal({
-      title: '充值',
-      content: '充值功能开发中...',
-      showCancel: false
+    wx.navigateTo({
+      url: '/pages/recharge/recharge'
     });
   },
 

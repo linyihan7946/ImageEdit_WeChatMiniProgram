@@ -85,16 +85,18 @@ Component({
     async updateRemainingCount() {
       try {
         const todayUsage = await this.getUserDailyUsage();
-        const remainingCount = GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT - todayUsage;
+        const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
+        const remainingCount = GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT + purchasedCount - todayUsage;
         console.log('更新剩余次数显示:', remainingCount);
         this.setData({
-          remainingCount: remainingCount
+          remainingCount: Math.max(0, remainingCount)
         });
       } catch (error) {
         console.error('更新剩余次数失败:', error);
         // 发生错误时默认显示最大值
+        const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
         this.setData({
-          remainingCount: GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT
+          remainingCount: GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT + purchasedCount
         });
       }
     },
