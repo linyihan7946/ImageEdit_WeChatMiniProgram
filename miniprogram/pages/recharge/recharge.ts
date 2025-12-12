@@ -1,63 +1,60 @@
 // recharge.ts
 Page({
   data: {
-    remainingCount: 0, // 当前剩余次数
+    currentBalance: '0.00', // 当前余额
     selectedPackageId: null, // 选中的套餐ID
     packages: [ // 充值套餐列表
       {
         id: 1,
-        count: 10,
-        price: 5,
-        desc: '10次图片编辑'
+        amount: 10,
+        price: 10,
+        desc: '充值10元'
       },
       {
         id: 2,
-        count: 20,
-        price: 10,
-        desc: '20次图片编辑'
+        amount: 20,
+        price: 20,
+        desc: '充值20元'
       },
       {
         id: 3,
-        count: 30,
-        price: 15,
-        desc: '30次图片编辑'
+        amount: 30,
+        price: 30,
+        desc: '充值30元'
       },
       {
         id: 4,
-        count: 40,
-        price: 20,
-        desc: '40次图片编辑'
+        amount: 40,
+        price: 40,
+        desc: '充值40元'
       },
       {
         id: 5,
-        count: 50,
-        price: 25,
-        desc: '50次图片编辑'
+        amount: 50,
+        price: 50,
+        desc: '充值50元'
       },
       {
         id: 6,
-        count: 100,
-        price: 50,
-        desc: '100次图片编辑'
+        amount: 100,
+        price: 100,
+        desc: '充值100元'
       }
     ]
   },
   
   onLoad() {
-    // 页面加载时获取当前剩余次数
-    this.updateRemainingCount();
+    // 页面加载时获取当前余额
+    this.updateCurrentBalance();
   },
   
-  // 更新剩余次数
-  updateRemainingCount() {
-    // 从本地存储获取当前剩余次数
-    const usedCount = wx.getStorageSync('usedCount') || 0;
-    const totalCount = 5; // 默认初始次数
-    const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
-    const remainingCount = Math.max(0, totalCount + purchasedCount - usedCount);
+  // 更新当前余额
+  updateCurrentBalance() {
+    // 从本地存储获取当前余额并格式化为两位小数
+    const currentBalance = wx.getStorageSync('currentBalance');
     
     this.setData({
-      remainingCount
+      currentBalance
     });
   },
   
@@ -73,7 +70,7 @@ Page({
   onRecharge() {
     if (!this.data.selectedPackageId) {
       wx.showToast({
-        title: '请选择充值套餐',
+        title: '请选择充值金额',
         icon: 'none'
       });
       return;
@@ -90,20 +87,20 @@ Page({
     
     // 模拟支付延迟
     setTimeout(() => {
-      // 更新本地存储的购买次数
-      const currentPurchasedCount = wx.getStorageSync('purchasedCount') || 0;
-      const newPurchasedCount = currentPurchasedCount + selectedPackage.count;
+      // 更新本地存储的当前余额
+      const currentBalance = parseFloat(wx.getStorageSync('currentBalance') || '0.00');
+      const newBalance = parseFloat((currentBalance + selectedPackage.amount).toFixed(2));
       
-      wx.setStorageSync('purchasedCount', newPurchasedCount);
+      wx.setStorageSync('currentBalance', newBalance);
       
-      // 更新当前剩余次数
-      this.updateRemainingCount();
+      // 更新当前余额显示
+      this.updateCurrentBalance();
       
       wx.hideLoading();
       
       // 显示充值成功提示
       wx.showToast({
-        title: `充值成功！获得${selectedPackage.count}次`,
+        title: `充值成功！金额：¥${selectedPackage.amount}`,
         icon: 'success'
       });
       

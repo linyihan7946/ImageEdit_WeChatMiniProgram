@@ -6,26 +6,26 @@
   </view>
   
   <view class="current-balance">
-    <text class="balance-label">当前剩余次数</text>
-    <text class="balance-value">{{remainingCount}}次</text>
+    <text class="balance-label">当前余额</text>
+    <text class="balance-value">¥{{currentBalance}}</text>
   </view>
   
   <view class="package-list">
-    <text class="package-title">选择充值套餐</text>
-    
-    <view 
-      wx:for="{{packages}}" 
-      wx:key="id"
-      class="package-item {{selectedPackageId === item.id ? 'selected' : ''}}"
-      bindtap="onSelectPackage" 
-      data-id="{{item.id}}"
-    >
-      <view class="package-info">
-        <text class="package-count">{{item.count}}次</text>
-        <text class="package-price">¥{{item.price}}</text>
+    <text class="package-title">选择充值金额</text>
+    <view class="package-grid">
+      <view 
+        wx:for="{{packages}}" 
+        wx:key="id"
+        class="package-item {{selectedPackageId === item.id ? 'selected' : ''}}"
+        bindtap="onSelectPackage" 
+        data-id="{{item.id}}"
+      >
+        <view class="package-info">
+          <text class="package-amount">¥{{item.amount}}</text>
+        </view>
+        <view class="package-desc">{{item.desc}}</view>
+        <view wx:if="{{selectedPackageId === item.id}}" class="selected-icon">✓</view>
       </view>
-      <view class="package-desc">{{item.desc}}</view>
-      <view wx:if="{{selectedPackageId === item.id}}" class="selected-icon">✓</view>
     </view>
   </view>
   

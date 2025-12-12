@@ -75,18 +75,27 @@ page {
   display: block;
 }
 
+.package-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 .package-item {
   background-color: white;
   border-radius: 20rpx;
-  padding: 30rpx;
+  padding: 40rpx 30rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   position: relative;
   border: 2rpx solid transparent;
   transition: all 0.3s ease;
+  width: 48%;
+  box-sizing: border-box;
 }
 
 .package-item:hover {
@@ -99,20 +108,15 @@ page {
 }
 
 .package-info {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.package-count {
+.package-amount {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
-  margin-right: 20rpx;
-}
-
-.package-price {
-  font-size: 32rpx;
   color: #673ab7;
-  font-weight: bold;
 }
 
 .package-desc {
@@ -122,6 +126,9 @@ page {
 }
 
 .selected-icon {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
   width: 40rpx;
   height: 40rpx;
   border-radius: 50%;

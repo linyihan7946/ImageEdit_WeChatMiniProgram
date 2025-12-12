@@ -5,7 +5,7 @@ Page({
     userAvatar: '',
     userId: '',
     phone: '',
-    balance: 0.00,
+    balance: '0.00',
     remainingCount: 0
   },
 
@@ -17,7 +17,7 @@ Page({
     // 模拟获取用户信息和余额
     const mockUserInfo = {
       userId: `USER${Math.floor(Math.random() * 10000).toString().padStart(5, '0')}`,
-      balance: Math.random() * 1000 + 100,
+      balance: '0.00',
       phone: `138${Math.floor(Math.random() * 100000000).toString().padStart(8, '0')}`
     };
 
