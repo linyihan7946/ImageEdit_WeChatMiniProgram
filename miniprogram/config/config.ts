@@ -1,7 +1,5 @@
 // 全局配置文件
 export const GLOBAL_CONFIG = {
-  // 每天免费使用图片编辑的次数
-  DAILY_FREE_USAGE_COUNT: 3,
   
   // 图片最大大小限制 (MB)
   MAX_IMAGE_SIZE: 10,
@@ -42,8 +40,14 @@ export const GLOBAL_CONFIG = {
     SAVE_FAILURE: '保存失败，请重试'
   },
   
+  // 每天免费使用图片编辑的次数
+  freeEditCount: 3,
+  
   // 菜品用料图参考图
-  dishIngredientReferenceImage: '' 
+  dishIngredientReferenceImage: '',
+  
+  // 扣款金额
+  deductAmount: 0.5,
 };
 
 // 导出默认配置

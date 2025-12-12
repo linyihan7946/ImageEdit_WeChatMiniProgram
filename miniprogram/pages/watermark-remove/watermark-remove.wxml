@@ -5,7 +5,7 @@
     <button class="choose-button" bindtap="chooseImage" loading="{{isProcessing}}">
       {{isProcessing ? '处理中...' : '选择图片去水印'}}
     </button>
-    <view class="usage-info">今日剩余: {{GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT - todayUsage}}次</view>
+    <view class="usage-info">今日剩余: {{GLOBAL_CONFIG.freeEditCount - todayUsage}}次</view>
   </view>
 
   <!-- 图片显示区域 -->

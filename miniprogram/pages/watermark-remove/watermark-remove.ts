@@ -65,7 +65,7 @@ Page({
 
   // 选择图片
   chooseImage() {
-    if (this.data.todayUsage >= GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT) {
+    if (this.data.todayUsage >= GLOBAL_CONFIG.freeEditCount) {
       wx.showToast({
         title: GLOBAL_CONFIG.MESSAGES.USAGE_LIMIT_EXCEEDED,
         icon: 'none',

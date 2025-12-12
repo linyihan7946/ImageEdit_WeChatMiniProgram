@@ -57,7 +57,7 @@ Component({
     async checkRemainingEditCount(): Promise<boolean> {
       try {
         const todayUsage = await this.getUserDailyUsage();
-        const remainingCount = GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT - todayUsage;
+        const remainingCount = GLOBAL_CONFIG.freeEditCount - todayUsage;
         console.log('当天已使用次数:', todayUsage, '剩余次数:', remainingCount);
         
         // 更新显示的剩余次数
@@ -86,7 +86,7 @@ Component({
       try {
         const todayUsage = await this.getUserDailyUsage();
         const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
-        const remainingCount = GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT + purchasedCount - todayUsage;
+        const remainingCount = GLOBAL_CONFIG.freeEditCount + purchasedCount - todayUsage;
         console.log('更新剩余次数显示:', remainingCount);
         this.setData({
           remainingCount: Math.max(0, remainingCount)
@@ -96,7 +96,7 @@ Component({
         // 发生错误时默认显示最大值
         const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
         this.setData({
-          remainingCount: GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT + purchasedCount
+          remainingCount: GLOBAL_CONFIG.freeEditCount + purchasedCount
         });
       }
     },
