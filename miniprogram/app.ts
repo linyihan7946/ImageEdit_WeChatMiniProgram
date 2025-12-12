@@ -27,6 +27,7 @@ App<IAppOption>({
         
         if (response.statusCode === 200 && response.data && response.data.success) {
           const config = response.data.data;
+          GLOBAL_CONFIG.DAILY_FREE_USAGE_COUNT = config.freeEditCount || 0;
           GLOBAL_CONFIG.dishIngredientReferenceImage = config.dishIngredientReferenceImage || '';
           console.log('配置信息加载成功:', config);
         } else {
