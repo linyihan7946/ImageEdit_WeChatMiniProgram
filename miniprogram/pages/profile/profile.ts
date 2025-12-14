@@ -1,9 +1,12 @@
+import GLOBAL_CONFIG from "../../config/config";
+import { dbUtils } from "../../utils/db-utils";
+
 // profile.ts
 Page({
   data: {
     username: '',
     userAvatar: '',
-    userId: '',
+    userId: 0,
     phone: '',
     balance: '0.00',
     remainingCount: 0
@@ -13,33 +16,30 @@ Page({
     this.getUserInfoAndBalance();
   },
 
-  getUserInfoAndBalance() {
+  async getUserInfoAndBalance() {
     // 模拟获取用户信息和余额
-    const mockUserInfo = {
-      userId: `USER${Math.floor(Math.random() * 10000).toString().padStart(5, '0')}`,
-      balance: '0.00',
-      phone: `138${Math.floor(Math.random() * 100000000).toString().padStart(8, '0')}`
+    const userInfoResponse = await dbUtils.getUserInfo();
+    if (!userInfoResponse.success) {
+      return;
+    }
+    const balanceResponse = await dbUtils.getBalance();
+    if (!balanceResponse.success) {
+      return;
+    }
+    const userInfo = {
+      userId: userInfoResponse.userInfo?.userId || 0,
+      balance: balanceResponse.balance?.toString() || '0.00',
+      phone: userInfoResponse.userInfo?.phone || ''
     };
 
     // 从本地存储获取用户信息
-    const storedUserInfo = wx.getStorageSync('userInfo');
-    if (storedUserInfo) {
-      this.setData({
-        username: storedUserInfo.username || '微信用户',
-        userAvatar: storedUserInfo.userAvatar || '/images/avatar-placeholder.svg',
-        userId: mockUserInfo.userId,
-        balance: mockUserInfo.balance,
-        phone: mockUserInfo.phone
-      });
-    } else {
-      this.setData({
-        username: '微信用户',
-        userAvatar: '/images/avatar-placeholder.svg',
-        userId: mockUserInfo.userId,
-        balance: mockUserInfo.balance,
-        phone: mockUserInfo.phone
-      });
-    }
+    this.setData({
+      username: '微信用户',
+      userAvatar: '/images/avatar-placeholder.svg',
+      userId: userInfo.userId,
+      balance: userInfo.balance,
+      phone: userInfo.phone
+    });
 
     // 计算剩余次数（模拟）
     this.updateRemainingCount();
@@ -48,7 +48,8 @@ Page({
   updateRemainingCount() {
     // 模拟获取剩余次数
     const usedCount = wx.getStorageSync('usedCount') || 0;
-    const totalCount = 5;
+    wx.setStorageSync('usedCount', usedCount);
+    const totalCount = GLOBAL_CONFIG.freeEditCount;
     const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
     const remainingCount = Math.max(0, totalCount + purchasedCount - usedCount);
 

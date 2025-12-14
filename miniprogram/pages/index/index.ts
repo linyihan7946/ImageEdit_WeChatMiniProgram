@@ -4,6 +4,7 @@ import { uploadImageToBackend } from '../../utils/base64-upload';
 import { processAndShowEditResult } from '../../utils/image-edit';
 import { API_URLS } from '../../config/api';
 import GLOBAL_CONFIG from '../../config/config';
+import { dbUtils } from '../../utils/db-utils';
 
 Component({
   data: {
@@ -26,37 +27,11 @@ Component({
   },
   
   methods: {
-    // 获取用户当天去水印使用次数
-    async getUserDailyUsage(): Promise<number> {
-      try {
-        const token = wx.getStorageSync('userToken');
-        const response = await new Promise<any>((resolve, reject) => {
-          wx.request({
-            url: API_URLS.USER_DAILY_USAGE,
-            method: 'GET',
-            header: {
-              'Authorization': `Bearer ${token}`,
-              'content-type': 'application/json'
-            },
-            success: resolve,
-            fail: reject
-          });
-        });
-        
-        if (response.statusCode === 200 && response.data && response.data.success) {
-          return response.data.data.todayUsage || 0;
-        }
-        return 0;
-      } catch (error) {
-        console.error('获取用户当天使用次数失败:', error);
-        return 0;
-      }
-    },
     
     // 检查当天剩余图片编辑次数
     async checkRemainingEditCount(): Promise<boolean> {
       try {
-        const todayUsage = await this.getUserDailyUsage();
+        const todayUsage = await dbUtils.getUserDailyUsage();
         const remainingCount = GLOBAL_CONFIG.freeEditCount - todayUsage;
         console.log('当天已使用次数:', todayUsage, '剩余次数:', remainingCount);
         
@@ -84,7 +59,7 @@ Component({
     // 更新剩余编辑次数并显示
     async updateRemainingCount() {
       try {
-        const todayUsage = await this.getUserDailyUsage();
+        const todayUsage = await dbUtils.getUserDailyUsage();
         const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
         const remainingCount = GLOBAL_CONFIG.freeEditCount + purchasedCount - todayUsage;
         console.log('更新剩余次数显示:', remainingCount);

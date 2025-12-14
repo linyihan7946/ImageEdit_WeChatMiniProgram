@@ -96,4 +96,38 @@ export class dbUtils {
       };
     }
   }
+
+  /**
+   * 获取用户当天使用图片编辑的次数
+   * @returns Promise<number>
+   */
+  static async getUserDailyUsage(): Promise<number> {
+    try {
+      const token = wx.getStorageSync('userToken');
+      const response = await new Promise<any>((resolve, reject) => {
+        wx.request({
+          url: API_URLS.USER_DAILY_USAGE,
+          method: 'GET',
+          header: {
+            'Authorization': `Bearer ${token}`,
+            'content-type': 'application/json'
+          },
+          success: resolve,
+          fail: reject
+        });
+      });
+      
+      if (response.statusCode === 200 && response.data && response.data.success) {
+        const usedCount = response.data.data.todayUsage || 0;
+        wx.setStorageSync('usedCount', usedCount);
+        return usedCount;
+      }
+      wx.setStorageSync('usedCount', 0);
+      return 0;
+    } catch (error) {
+      console.error('获取用户当天使用次数失败:', error);
+      wx.setStorageSync('usedCount', 0);
+      return 0;
+    }
+  }
 }
