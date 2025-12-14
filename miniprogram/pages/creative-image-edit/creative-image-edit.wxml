@@ -36,6 +36,22 @@
     ></textarea>
   </view>
 
+  <!-- 比例选择区 -->
+  <view class="ratio-area">
+    <text class="ratio-label">图片比例</text>
+    <view class="ratio-list">
+      <block wx:for="{{ratioOptions}}" wx:key="value">
+        <view 
+          class="ratio-item {{selectedRatio === item.value ? 'active' : ''}}" 
+          bindtap="onSelectRatio" 
+          data-value="{{item.value}}"
+        >
+          <text class="ratio-text">{{item.label}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
   <!-- 生成按钮 -->
   <button 
     class="generate-button" 

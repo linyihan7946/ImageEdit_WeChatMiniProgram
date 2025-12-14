@@ -9,6 +9,20 @@ Page({
     isGenerating: false, // 是否正在生成图片
     generatedImageUrl: '', // 生成的图片URL
     showPreviewModal: false, // 是否显示预览弹框
+    // 比例选择相关
+    ratioOptions: [
+      { label: '1:1', value: '1:1' },
+      { label: '16:9', value: '16:9' },
+      { label: '9:16', value: '9:16' },
+      { label: '4:3', value: '4:3' },
+      { label: '3:4', value: '3:4' },
+      { label: '3:2', value: '3:2' },
+      { label: '2:3', value: '2:3' },
+      { label: '21:9', value: '21:9' },
+      { label: '5:4', value: '5:4' },
+      { label: '4:5', value: '4:5' }
+    ],
+    selectedRatio: '1:1' // 默认选中1:1比例
   },
 
   // 页面加载时
@@ -91,6 +105,14 @@ Page({
     });
   },
 
+  // 选择比例
+  onSelectRatio(e: any) {
+    const ratio = e.currentTarget.dataset.value;
+    this.setData({
+      selectedRatio: ratio
+    });
+  },
+
   // 生成图片
   async onGenerateImage() {
     if (!this.data.prompt.trim()) {
@@ -131,7 +153,8 @@ Page({
           },
           data: {
             prompt: this.data.prompt,
-            imageUrls: this.data.imageUrls
+            imageUrls: this.data.imageUrls,
+            aspectRatio: this.data.selectedRatio
           },
           timeout: 300000, // 设置超时时间为300秒
           success: resolve,
