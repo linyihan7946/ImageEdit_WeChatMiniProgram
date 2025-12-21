@@ -98,8 +98,60 @@ export const getImageFileSize = (imagePath: string): Promise<number> => {
   });
 };
 
+/** */
+/**
+ * 获取图片的最接近长宽比
+ * @param imagePath 本地图片文件路径
+ * @param aspectRatios 可选的长宽比列表，默认包含21:9, 16:9, 4:3, 3:2, 1:1, 4:5, 3:4, 2:3, 9:16, 5:4
+ * @returns Promise<string> 返回最接近的长宽比，格式为'21:9'等
+ * @returns 
+ */
+export const getClosestImageAspectRatio = async (imagePath: string, aspectRatios: {ratio: string, value: number}[] = 
+  [
+    { ratio: '21:9', value: 21/9 },
+    { ratio: '16:9', value: 16/9 },
+    { ratio: '4:3', value: 4/3 },
+    { ratio: '3:2', value: 3/2 },
+    { ratio: '1:1', value: 1 },
+    { ratio: '4:5', value: 4/5 },
+    { ratio: '3:4', value: 3/4 },
+    { ratio: '2:3', value: 2/3 },
+    { ratio: '9:16', value: 9/16 },
+    { ratio: '5:4', value: 5/4 }
+  ]
+) => {
+  const imageInfo: {width: number, height: number} = await new Promise<any>((resolve, reject) => {
+    wx.getImageInfo({
+      src: imagePath,
+      success: resolve,
+      fail: reject
+    });
+  });
+  console.log("图片信息:", imageInfo);
+  
+  // 计算图片的实际长宽比
+  const actualRatio = imageInfo.width / imageInfo.height;
+  
+  // 找到最接近的长宽比
+  let closestRatio = aspectRatios[0];
+  let minDiff = Math.abs(actualRatio - closestRatio.value);
+  
+  for (const item of aspectRatios) {
+    const diff = Math.abs(actualRatio - item.value);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closestRatio = item;
+    }
+  }
+
+  console.log(`图片实际长宽比: ${actualRatio.toFixed(4)}, 最接近的预设比例: ${closestRatio.ratio}`);
+  
+  return closestRatio.ratio;
+};
+
 export default {
   imageToBase64,
   imageToFullBase64,
-  getImageFileSize
+  getImageFileSize,
+  getClosestImageAspectRatio
 };
