@@ -2,6 +2,7 @@
 import { uploadImageToBackend } from '../../utils/base64-upload';
 import { API_URLS } from '../../config/api';
 import GLOBAL_CONFIG from '../../config/config';
+import { getClosestImageAspectRatio } from '../../utils/image-util';
 
 Component({
   data: {
@@ -61,6 +62,8 @@ Component({
         // 使用从配置获取的参考图链接，如果没有则使用空字符串
         const imageUrls = [imageUrl, GLOBAL_CONFIG.dishIngredientReferenceImage || ""];
 
+        const aspectRatio = await getClosestImageAspectRatio(GLOBAL_CONFIG.dishIngredientReferenceImage);
+
         wx.showLoading({
           title: '生成图片中...',
         });
@@ -80,7 +83,8 @@ Component({
             },
             data: {
               prompt,
-              imageUrls
+              imageUrls,
+              aspectRatio
             },
             timeout: 300000, // 设置超时时间为300秒
             success: resolve,
