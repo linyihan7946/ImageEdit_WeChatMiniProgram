@@ -99,14 +99,56 @@ Page({
     });
     
     try {
+      // 获取图片信息以计算长宽比
+      const imageInfo: {width: number, height: number} = await new Promise<any>((resolve, reject) => {
+        wx.getImageInfo({
+          src: imagePath,
+          success: resolve,
+          fail: reject
+        });
+      });
+      console.log("图片信息:", imageInfo);
+      
+      // 定义可选的长宽比列表
+      const aspectRatios = [
+        { ratio: '21:9', value: 21/9 },
+        { ratio: '16:9', value: 16/9 },
+        { ratio: '4:3', value: 4/3 },
+        { ratio: '3:2', value: 3/2 },
+        { ratio: '1:1', value: 1 },
+        { ratio: '4:5', value: 4/5 },
+        { ratio: '3:4', value: 3/4 },
+        { ratio: '2:3', value: 2/3 },
+        { ratio: '9:16', value: 9/16 },
+        { ratio: '5:4', value: 5/4 }
+      ];
+      
+      // 计算图片的实际长宽比
+      const actualRatio = imageInfo.width / imageInfo.height;
+      
+      // 找到最接近的长宽比
+      let closestRatio = aspectRatios[0];
+      let minDiff = Math.abs(actualRatio - closestRatio.value);
+      
+      for (const item of aspectRatios) {
+        const diff = Math.abs(actualRatio - item.value);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestRatio = item;
+        }
+      }
+      
+      console.log(`图片实际长宽比: ${actualRatio.toFixed(4)}, 最接近的预设比例: ${closestRatio.ratio}`);
+      
       // 上传图片到后端
       const uploadResult = await uploadImageToBackend(imagePath);
       const imageUrl = uploadResult.data.fileUrl;
       
-      // 调用去水印API
+      // 调用去水印API，传入最接近的长宽比
       const editResult = await processAndShowEditResult(
         imageUrl, 
-        '移除图片上的水印，保持原图内容不变'
+        '移除图片上的水印，保持原图内容不变',
+        closestRatio.ratio
       );
       
       if (editResult) {
