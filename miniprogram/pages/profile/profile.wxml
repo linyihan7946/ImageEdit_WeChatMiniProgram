@@ -23,6 +23,6 @@
   
   <view class="profile-actions">
     <button class="action-btn" bindtap="onEditProfile">编辑资料</button>
-    <button class="action-btn logout" bindtap="onLogout">退出登录</button>
+
   </view>
 </view>

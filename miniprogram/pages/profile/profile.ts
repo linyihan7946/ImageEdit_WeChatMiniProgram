@@ -59,24 +59,6 @@ Page({
     });
   },
 
-  onLogout() {
-    wx.showModal({
-      title: '退出登录',
-      content: '确定要退出登录吗？',
-      success: (res) => {
-        if (res.confirm) {
-          // 清除本地存储的用户信息
-          wx.removeStorageSync('userInfo');
-          wx.removeStorageSync('usedCount');
-          
-          // 跳转到登录页面
-          wx.reLaunch({
-            url: '/pages/login/login'
-          });
-        }
-      }
-    });
-  },
 
   onShow() {
     // 页面显示时更新用户信息
