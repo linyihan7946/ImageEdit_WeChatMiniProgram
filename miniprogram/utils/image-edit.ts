@@ -154,19 +154,21 @@ class ImageEditUtil {
   }
 
   // 调用Gemini图片生成接口
-  static async callGeminiImageGenerate(imageUrl: string, instruction: string, aspectRatio: string): Promise<string> {
+  static async callGeminiImageGenerate(imageUrls: string[], prompt: string, aspectRatio: string): Promise<string> {
     return new Promise((resolve, reject) => {
       wx.request({
         url: API_URLS.GEMINI_IMAGE_GENERATE,
         method: 'POST',
+        header: {
+          'Authorization': `Bearer ${wx.getStorageSync('userToken')}`,
+          'Content-Type': 'application/json'
+        },
         data: {
-          imageUrl: imageUrl,
-          instruction,
+          imageUrls,
+          prompt,
           aspectRatio
         },
-        header: {
-          'Authorization': `Bearer ${wx.getStorageSync('userToken')}`
-        },
+        timeout: 300000, // 设置超时时间为300秒
         success: (res) => {
           const data: any = res.data;
           if (res.statusCode === 200 && data && data.success) {

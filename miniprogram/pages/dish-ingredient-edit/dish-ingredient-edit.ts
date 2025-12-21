@@ -3,6 +3,7 @@ import { uploadImageToBackend } from '../../utils/base64-upload';
 import { API_URLS } from '../../config/api';
 import GLOBAL_CONFIG from '../../config/config';
 import { getClosestImageAspectRatio } from '../../utils/image-util';
+import ImageEditUtil from '../../utils/image-edit';
 
 Component({
   data: {
@@ -54,87 +55,46 @@ Component({
         return;
       }
       
-      try {
-        // 上传图片到后端
-        const uploadResult = await uploadImageToBackend(this.data.selectedImagePath);
-        const imageUrl = uploadResult.data.fileUrl;
-        console.log('图片上传成功:', imageUrl);
-        // 使用从配置获取的参考图链接，如果没有则使用空字符串
-        const imageUrls = [imageUrl, GLOBAL_CONFIG.dishIngredientReferenceImage || ""];
+      // 上传图片到后端
+      const uploadResult = await uploadImageToBackend(this.data.selectedImagePath);
+      const imageUrl = uploadResult.data.fileUrl;
+      console.log('图片上传成功:', imageUrl);
+      // 使用从配置获取的参考图链接，如果没有则使用空字符串
+      const imageUrls = [imageUrl, GLOBAL_CONFIG.dishIngredientReferenceImage || ""];
+      const prompt = '根据图1的菜，生成类似图2的这个菜的食材跟调料用量图。';
+      const aspectRatio = "1:1";// await getClosestImageAspectRatio(GLOBAL_CONFIG.dishIngredientReferenceImage);
 
-        const aspectRatio = await getClosestImageAspectRatio(GLOBAL_CONFIG.dishIngredientReferenceImage);
-
-        wx.showLoading({
-          title: '生成图片中...',
-        });
-        
-        // 调用GEMINI_IMAGE_GENERATE接口生成用料图
-        const prompt = '根据图1的菜，生成类似图2的这个菜的食材跟调料用量图。';
-        const token = wx.getStorageSync('userToken');
+      wx.showLoading({
+        title: '生成图片中...',
+      });
       
-        // 调用后端接口生成图片
-        const response = await new Promise<any>((resolve, reject) => {
-          wx.request({
-            url: API_URLS.GEMINI_IMAGE_GENERATE,
-            method: 'POST',
-            header: {
-              'Authorization': `Bearer ${token}`,
-              'content-type': 'application/json'
-            },
-            data: {
-              prompt,
-              imageUrls,
-              aspectRatio
-            },
-            timeout: 300000, // 设置超时时间为300秒
-            success: resolve,
-            fail: reject
-          });
-        });
-        console.log("后端结果返回")
-        if (response.statusCode === 200 && response.data && response.data.success) {
-          const images = response.data.data.images || [];
-          let generatedImageUrl = '';
-          if (images && images.length > 0) {
-            generatedImageUrl = images[0];
-          }
-          console.log('Generated image URL:', generatedImageUrl);
-          
-          // 先隐藏加载框
-          wx.hideLoading();
-          
-          // 然后更新数据显示图片
-          this.setData({
-            generatedImageUrl
-          });
-          
-          // 最后显示成功提示
-          wx.showToast({
-            title: '图片生成成功',
-            icon: 'success'
-          });
-          
-          console.log('Current generatedImageUrl:', this.data.generatedImageUrl);
-        } else {
-          // 先隐藏加载框
-          wx.hideLoading();
-          
-          // 然后显示失败提示
-          wx.showToast({
-            title: response.data?.message || '图片生成失败',
-            icon: 'none'
-          });
-        }
-      } catch (error) {
-        console.error('生成图片失败:', error);
+      // 调用GEMINI_IMAGE_GENERATE接口生成用料图
+      ImageEditUtil.callGeminiImageGenerate(imageUrls, prompt, aspectRatio).then((generatedImageUrl) => {
+        console.log('Generated image URL:', generatedImageUrl);
+        
         // 先隐藏加载框
         wx.hideLoading();
+        
+        // 然后更新数据显示图片
+        this.setData({
+          generatedImageUrl
+        });
+        
+        // 最后显示成功提示
+        wx.showToast({
+          title: '图片生成成功',
+          icon: 'success'
+        });
+      }, () => {
+        // 先隐藏加载框
+        wx.hideLoading();
+        
         // 然后显示失败提示
         wx.showToast({
-          title: '生成图片失败，请重试',
+          title: '图片生成失败，请重试',
           icon: 'none'
         });
-      }
+      });
     },
     
 
