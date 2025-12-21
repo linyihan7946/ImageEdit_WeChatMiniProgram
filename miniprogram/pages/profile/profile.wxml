@@ -14,10 +14,7 @@
       <text class="info-label">手机号</text>
       <text class="info-value">{{phone || '未绑定'}}</text>
     </view>
-    <view class="info-item">
-      <text class="info-label">账户余额</text>
-      <text class="info-value balance">¥{{balance || 0.00}}</text>
-    </view>
+
     <view class="info-item">
       <text class="info-label">剩余编辑次数</text>
       <text class="info-value">{{remainingCount || 0}}</text>
@@ -25,7 +22,6 @@
   </view>
   
   <view class="profile-actions">
-    <button class="action-btn" bindtap="onRecharge">充值</button>
     <button class="action-btn" bindtap="onEditProfile">编辑资料</button>
     <button class="action-btn logout" bindtap="onLogout">退出登录</button>
   </view>

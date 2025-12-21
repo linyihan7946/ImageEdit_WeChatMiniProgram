@@ -8,7 +8,6 @@ Page({
     userAvatar: '',
     userId: 0,
     phone: '',
-    balance: '0.00',
     remainingCount: 0
   },
 
@@ -17,18 +16,13 @@ Page({
   },
 
   async getUserInfoAndBalance() {
-    // 模拟获取用户信息和余额
+    // 模拟获取用户信息
     const userInfoResponse = await dbUtils.getUserInfo();
     if (!userInfoResponse.success) {
       return;
     }
-    const balanceResponse = await dbUtils.getBalance();
-    if (!balanceResponse.success) {
-      return;
-    }
     const userInfo = {
       userId: userInfoResponse.userInfo?.userId || 0,
-      balance: balanceResponse.balance?.toString() || '0.00',
       phone: userInfoResponse.userInfo?.phone || ''
     };
 
@@ -37,7 +31,6 @@ Page({
       username: '微信用户',
       userAvatar: '/images/avatar-placeholder.svg',
       userId: userInfo.userId,
-      balance: userInfo.balance,
       phone: userInfo.phone
     });
 
@@ -55,12 +48,6 @@ Page({
 
     this.setData({
       remainingCount
-    });
-  },
-
-  onRecharge() {
-    wx.navigateTo({
-      url: '/pages/recharge/recharge'
     });
   },
 
