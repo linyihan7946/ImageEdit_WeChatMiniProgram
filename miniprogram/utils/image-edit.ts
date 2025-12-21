@@ -1,4 +1,5 @@
 import { API_URLS } from '../config/api';
+import { getClosestImageAspectRatio } from './image-util';
 
 /**
  * 图片编辑工具类
@@ -150,6 +151,40 @@ class ImageEditUtil {
       });
       return null;
     }
+  }
+
+  // 调用Gemini图片生成接口
+  static async callGeminiImageGenerate(imageUrl: string, instruction: string, aspectRatio: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: API_URLS.GEMINI_IMAGE_GENERATE,
+        method: 'POST',
+        data: {
+          imageUrl: imageUrl,
+          instruction,
+          aspectRatio
+        },
+        header: {
+          'Authorization': `Bearer ${wx.getStorageSync('userToken')}`
+        },
+        success: (res) => {
+          const data: any = res.data;
+          if (res.statusCode === 200 && data && data.success) {
+            const images = data.data.images || [];
+            if (images && images.length > 0) {
+              resolve(images[0]);
+            } else {
+              reject(new Error('未返回图片结果'));
+            }
+          } else {
+            reject(new Error(data?.message || '接口调用失败'));
+          }
+        },
+        fail: (err) => {
+          reject(err);
+        }
+      });
+    });
   }
 }
 

@@ -11,6 +11,7 @@
     <button class="vertical-button doubao-button" bindtap="onDoubaoRemoveWatermark">豆包出图去水印</button>
     <button class="vertical-button creative-edit-button" bindtap="onCreativeImageEdit">创意图片编辑</button>
     <button class="vertical-button dish-ingredient-button" bindtap="onDishIngredientEdit">菜品食材用料图</button>
+    <button class="vertical-button photo-restoration-button" bindtap="onPhotoRestoration">老照片翻新</button>
     <button class="vertical-button colorize-button" bindtap="onColorizePress" hidden>手绘变彩图</button>
     <button class="vertical-button cos-auth-button" bindtap="onTest" hidden>测试</button>
   </view>

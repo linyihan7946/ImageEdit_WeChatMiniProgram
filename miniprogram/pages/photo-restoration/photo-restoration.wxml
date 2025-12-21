@@ -1,0 +1,30 @@
+<!--photo-restoration.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">老照片翻新</text>
+  </view>
+  
+  <view class="main-content">
+    <!-- 图片选择区域 -->
+    <view class="image-selector">
+      <button class="select-image-btn" bindtap="onSelectImage">选择图片</button>
+      <text class="hint-text">请选择一张需要翻新的老照片</text>
+    </view>
+    
+    <!-- 选择的图片预览 -->
+    <view class="image-preview" wx:if="{{selectedImageUrl}}">
+      <image class="preview-image" src="{{selectedImageUrl}}" mode="aspectFit"></image>
+      <button class="restore-btn" bindtap="onRestorePhoto" loading="{{isProcessing}}">开始翻新</button>
+    </view>
+    
+    <!-- 处理后的图片显示 -->
+    <view class="result-section" wx:if="{{restoredImageUrl}}">
+      <text class="result-title">翻新结果</text>
+      <image class="result-image" src="{{restoredImageUrl}}" mode="aspectFit"></image>
+      <view class="action-buttons">
+        <button class="action-btn save-btn" bindtap="onSaveImage">保存图片</button>
+        <button class="action-btn select-new-btn" bindtap="onSelectNewImage">重新选择</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -184,6 +184,38 @@ Component({
       });
     },
     
+    // 老照片翻新按钮点击事件
+    async onPhotoRestoration() {
+      console.log('老照片翻新按钮被点击');
+      
+      // 检查登录状态
+      const isLoggedIn = await this.checkLoginStatus();
+      if (!isLoggedIn) {
+        return;
+      }
+      
+      // 检查剩余编辑次数
+      const hasRemainingCount = await this.checkRemainingEditCount();
+      if (!hasRemainingCount) {
+        return;
+      }
+      
+      // 跳转到老照片翻新页面
+      wx.navigateTo({
+        url: '/pages/photo-restoration/photo-restoration',
+        success: () => {
+          console.log('成功跳转到老照片翻新页面');
+        },
+        fail: (error) => {
+          console.error('跳转到老照片翻新页面失败:', error);
+          wx.showToast({
+            title: '页面跳转失败，请重试',
+            icon: 'none'
+          });
+        }
+      });
+    },
+    
     // 检查登录状态并获取用户信息
     checkLoginStatus(): boolean {
       const token = wx.getStorageSync('userToken');

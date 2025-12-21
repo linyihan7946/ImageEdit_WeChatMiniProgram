@@ -158,6 +158,23 @@ page {
   opacity: 0.8;
 }
 
+.photo-restoration-button {
+  height: 100rpx;
+  background-color: #673AB7;
+  color: white;
+  font-size: 36rpx;
+  font-weight: bold;
+  border-radius: 50rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(103, 58, 183, 0.3);
+}
+
+.photo-restoration-button:active {
+  opacity: 0.8;
+}
+
 .colorize-button {
   height: 100rpx;
   background-color: #07C160;
