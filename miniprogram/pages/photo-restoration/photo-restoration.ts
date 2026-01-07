@@ -1,10 +1,9 @@
 // photo-restoration.ts
 import { uploadImageToBackend } from '../../utils/base64-upload';
-import { API_URLS } from '../../config/api';
 import { dbUtils } from '../../utils/db-utils';
 import GLOBAL_CONFIG from '../../config/config';
 import { getClosestImageAspectRatio } from '../../utils/image-util';
-import ImageEditUtil from '../../utils/image-edit';
+import ImageEditUtil, { EditImageType } from '../../utils/image-edit';
 
 Component({
   data: {
@@ -78,7 +77,12 @@ Component({
         // 调用Gemini图片生成接口进行老照片翻新
         const ratio = await getClosestImageAspectRatio(imageUrl);
         const prompt = '将这张老照片进行翻新处理，修复损坏部分，增强清晰度和色彩，使其看起来更清晰、鲜艳。';
-        const restoredImageUrl = await ImageEditUtil.callGeminiImageGenerate(imageUrl, prompt, ratio);
+        const restoredImageUrl = await ImageEditUtil.callGeminiImageGenerate(
+          imageUrl, 
+          prompt, 
+          ratio,
+          EditImageType.PhotoRestoration
+        );
         
         this.setData({
           restoredImageUrl: restoredImageUrl,

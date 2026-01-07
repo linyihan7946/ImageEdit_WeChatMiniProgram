@@ -1,61 +1,20 @@
 import { API_URLS } from '../config/api';
-import { getClosestImageAspectRatio } from './image-util';
+
+/**
+ * 编辑图片的类型
+ */
+export enum EditImageType {
+  WatermarkRemove = 1,// 去水印
+  CreativeImage = 2,// 创意图片
+  DishIngredient = 3,// 菜品用料图
+  PhotoRestoration = 4,// 照片修复
+}
 
 /**
  * 图片编辑工具类
  * 封装IMAGE_EDIT相关的接口调用
  */
 class ImageEditUtil {
-  /**
-   * 调用图片编辑接口，将图片转换为水彩画
-   * @param imageUrl 待编辑的图片URL
-   * @param instruction 编辑指令
-   * @returns Promise<{ success: boolean; data?: { images: string[] }; error?: string }>
-   */
-  static async editImage(imageUrl: string, instruction: string = '将下面的手绘图变成漂亮的水彩画图'): Promise<{ 
-    success: boolean; 
-    data?: { images: string[] }; 
-    error?: string 
-  }> {
-    return new Promise((resolve) => {
-      const token = wx.getStorageSync('userToken');
-
-      wx.request({
-        url: API_URLS.IMAGE_EDIT,
-        method: 'POST',
-        header: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        data: {
-          instruction,
-          imageUrls: [imageUrl]
-        },
-        success: (res) => {
-          const data: any = res.data;
-          if (res.statusCode === 200 && data && data.success) {
-            resolve({
-              success: true,
-              data: { images: data.data.images || [] }
-            });
-          } else {
-            resolve({
-              success: false,
-              error: '图片编辑失败: ' + (data && typeof data === 'object' && data.message || '未知错误')
-            });
-          }
-        },
-        fail: (err) => {
-          const errorMsg = '图片编辑请求失败: ' + err.errMsg;
-          console.error(errorMsg);
-          resolve({
-            success: false,
-            error: errorMsg
-          });
-        }
-      });
-    });
-  }
 
   /**
    * 调用新版图片编辑接口
@@ -63,7 +22,12 @@ class ImageEditUtil {
    * @param instruction 编辑指令
    * @returns Promise<{ success: boolean; data?: any; error?: string }>
    */
-  static async editImageNew(imageUrl: string, instruction: string, aspectRatio: string): Promise<{ 
+  static async editImageNew(
+    imageUrl: string, 
+    instruction: string, 
+    aspectRatio: string,
+    editType: EditImageType,
+  ): Promise<{ 
     success: boolean; 
     data?: any; 
     error?: string 
@@ -82,7 +46,8 @@ class ImageEditUtil {
         data: {
           instruction,
           imageUrls: [imageUrl],
-          aspectRatio
+          aspectRatio,
+          editType,
         },
         success: (res) => {
           const data: any = res.data;
@@ -116,7 +81,7 @@ class ImageEditUtil {
    * @param instruction 编辑指令
    * @returns Promise<string | null> 编辑后的图片URL，失败返回null
    */
-  static async processAndShowEditResult(imageUrl: string, instruction: string, aspectRatio: string = '16:9'): Promise<string | null> {
+  static async processAndShowEditResult(imageUrl: string, instruction: string, aspectRatio: string = '16:9', editType: EditImageType): Promise<string | null> {
     try {
       wx.showLoading({
         title: '图片编辑中...',
@@ -124,7 +89,7 @@ class ImageEditUtil {
       });
 
       // const result = await ImageEditUtil.editImage(imageUrl, instruction);
-      const result = await ImageEditUtil.editImageNew(imageUrl, instruction, aspectRatio);
+      const result = await ImageEditUtil.editImageNew(imageUrl, instruction, aspectRatio, editType);
     
 
       wx.hideLoading();
@@ -154,7 +119,12 @@ class ImageEditUtil {
   }
 
   // 调用Gemini图片生成接口
-  static async callGeminiImageGenerate(imageUrls: string[], prompt: string, aspectRatio: string): Promise<string> {
+  static async callGeminiImageGenerate(
+    imageUrls: string[], 
+    prompt: string, 
+    aspectRatio: string,
+    editType: EditImageType,
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
       wx.request({
         url: API_URLS.GEMINI_IMAGE_GENERATE,
@@ -166,7 +136,8 @@ class ImageEditUtil {
         data: {
           imageUrls,
           prompt,
-          aspectRatio
+          aspectRatio,
+          editType,
         },
         timeout: 300000, // 设置超时时间为300秒
         success: (res) => {
@@ -191,7 +162,7 @@ class ImageEditUtil {
 }
 
 // 导出便捷方法
-export const { editImage, editImageNew, processAndShowEditResult } = ImageEditUtil;
+export const { editImageNew } = ImageEditUtil;
 
 // 导出默认工具类实例
 export default ImageEditUtil;

@@ -1,8 +1,7 @@
 // index.ts
 import { getTempKeys } from '../../utils/cos-upload';
 import { uploadImageToBackend } from '../../utils/base64-upload';
-import { processAndShowEditResult } from '../../utils/image-edit';
-import { API_URLS } from '../../config/api';
+import ImageEditUtil, { EditImageType } from '../../utils/image-edit';
 import GLOBAL_CONFIG from '../../config/config';
 import { dbUtils } from '../../utils/db-utils';
 
@@ -326,7 +325,6 @@ Component({
           
 
           // 这里可以处理选择的图片，比如上传到服务器进行彩绘处理
-          const userInfo = getApp().globalData.userInfo;
           const imagePath = res.tempFiles[0].tempFilePath;
           console.log('选择的图片:', imagePath)
           
@@ -335,7 +333,12 @@ Component({
           const imageUrl = result.data.fileUrl;
           
           // 调用图片编辑工具类处理图片
-          const editedImageUrl = await processAndShowEditResult(imageUrl, '将下面的手绘图变成漂亮的水彩画图');
+          const editedImageUrl = await ImageEditUtil.processAndShowEditResult(
+            imageUrl, 
+            '将下面的手绘图变成漂亮的水彩画图',
+            '16:9',
+            EditImageType.CreativeImage
+          );
           if (editedImageUrl) {
             console.log('编辑后的图片URL:', editedImageUrl);
             // 这里可以添加处理编辑后图片的逻辑

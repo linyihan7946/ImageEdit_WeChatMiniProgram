@@ -1,9 +1,7 @@
 // dish-ingredient-edit.ts
 import { uploadImageToBackend } from '../../utils/base64-upload';
-import { API_URLS } from '../../config/api';
 import GLOBAL_CONFIG from '../../config/config';
-import { getClosestImageAspectRatio } from '../../utils/image-util';
-import ImageEditUtil from '../../utils/image-edit';
+import ImageEditUtil, { EditImageType } from '../../utils/image-edit';
 
 Component({
   data: {
@@ -69,7 +67,12 @@ Component({
       });
       
       // 调用GEMINI_IMAGE_GENERATE接口生成用料图
-      ImageEditUtil.callGeminiImageGenerate(imageUrls, prompt, aspectRatio).then((generatedImageUrl) => {
+      ImageEditUtil.callGeminiImageGenerate(
+        imageUrls, 
+        prompt, 
+        aspectRatio,
+        EditImageType.DishIngredient
+      ).then((generatedImageUrl) => {
         console.log('Generated image URL:', generatedImageUrl);
         
         // 先隐藏加载框

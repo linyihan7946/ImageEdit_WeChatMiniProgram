@@ -1,6 +1,6 @@
 // watermark-remove.ts
 import { uploadImageToBackend } from '../../utils/base64-upload';
-import { processAndShowEditResult } from '../../utils/image-edit';
+import ImageEditUtil, { EditImageType } from '../../utils/image-edit';
 import { API_URLS } from '../../config/api';
 import { GLOBAL_CONFIG } from '../../config/config';
 import { getClosestImageAspectRatio } from '../../utils/image-util';
@@ -107,10 +107,11 @@ Page({
       const imageUrl = uploadResult.data.fileUrl;
       
       // 调用去水印API，传入最接近的长宽比
-      const editResult = await processAndShowEditResult(
+      const editResult = await ImageEditUtil.processAndShowEditResult(
         imageUrl, 
         '移除图片上的水印，保持原图内容不变',
-        aspectRatio
+        aspectRatio,
+        EditImageType.WatermarkRemove
       );
       
       if (editResult) {
