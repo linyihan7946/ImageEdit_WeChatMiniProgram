@@ -185,7 +185,7 @@ Page({
       } else {
         wx.hideLoading();
         wx.showToast({
-          title: response.data?.message || '图片生成失败',
+          title: response.data && response.data.message ? response.data.message : '图片生成失败',
           icon: 'none'
         });
       }

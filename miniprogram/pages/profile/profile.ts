@@ -22,8 +22,8 @@ Page({
       return;
     }
     const userInfo = {
-      userId: userInfoResponse.userInfo?.userId || 0,
-      phone: userInfoResponse.userInfo?.phone || ''
+      userId: userInfoResponse.userInfo && userInfoResponse.userInfo.userId ? userInfoResponse.userInfo.userId : 0,
+      phone: userInfoResponse.userInfo && userInfoResponse.userInfo.phone ? userInfoResponse.userInfo.phone : ''
     };
 
     // 从本地存储获取用户信息

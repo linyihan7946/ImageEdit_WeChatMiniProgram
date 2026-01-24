@@ -42,7 +42,7 @@ export class dbUtils {
       if (userInfoResponse.statusCode === 200 && userInfoResponse.data && userInfoResponse.data.success) {
         userInfo = userInfoResponse.data.data;
       } else {
-        console.error('获取用户信息失败:', userInfoResponse.data?.message || '未知错误');
+        console.error('获取用户信息失败:', userInfoResponse.data && userInfoResponse.data.message ? userInfoResponse.data.message : '未知错误');
       }
       return { userInfo, success: userInfo !== null };
     }
@@ -82,7 +82,7 @@ export class dbUtils {
       if (balanceResponse.statusCode === 200 && balanceResponse.data && balanceResponse.data.success) {
         balance = parseFloat(balanceResponse.data.data.balance) || 0;
       } else {
-        console.error('获取用户余额失败:', balanceResponse.data?.message || '未知错误');
+        console.error('获取用户余额失败:', balanceResponse.data && balanceResponse.data.message ? balanceResponse.data.message : '未知错误');
       }
 
       return {

@@ -150,7 +150,7 @@ class ImageEditUtil {
               reject(new Error('未返回图片结果'));
             }
           } else {
-            reject(new Error(data?.message || '接口调用失败'));
+            reject(new Error(data && data.message ? data.message : '接口调用失败'));
           }
         },
         fail: (err) => {

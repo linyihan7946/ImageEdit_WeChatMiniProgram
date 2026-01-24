@@ -32,7 +32,7 @@ App<IAppOption>({
           GLOBAL_CONFIG.deductAmount = config.deductAmount || 0.5;
           console.log('配置信息加载成功:', config);
         } else {
-          console.error('获取配置信息失败:', response.data?.message || '未知错误');
+          console.error('获取配置信息失败:', response.data && response.data.message ? response.data.message : '未知错误');
         }
       },
     })
