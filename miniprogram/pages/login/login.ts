@@ -3,7 +3,8 @@ import { API_URLS } from '../../config/api';
 
 Page({
   data: {
-    loading: false
+    loading: false,
+    agreed: false
   },
 
   onLoad() {
@@ -28,8 +29,38 @@ Page({
     }
   },
 
+  // 协议同意状态变更
+  onAgreementChange(e: any) {
+    this.setData({
+      agreed: e.detail.value.includes('agree')
+    });
+  },
+
+  // 跳转到用户协议页面
+  navigateToUserAgreement() {
+    wx.navigateTo({
+      url: '/pages/user-agreement/user-agreement'
+    });
+  },
+
+  // 跳转到隐私声明页面
+  navigateToPrivacyPolicy() {
+    wx.navigateTo({
+      url: '/pages/privacy-policy/privacy-policy'
+    });
+  },
+
   // 微信一键登录
   onWechatLogin(e: any) {
+    if (!this.data.agreed) {
+      // 用户未同意协议
+      wx.showToast({
+        title: '请先阅读并同意用户协议和隐私声明',
+        icon: 'none'
+      });
+      return;
+    }
+
     if (!e.detail.userInfo) {
       // 用户拒绝授权
       wx.showToast({

@@ -7,7 +7,9 @@
     "pages/creative-image-edit/creative-image-edit",
     "pages/dish-ingredient-edit/dish-ingredient-edit",
     "pages/recharge/recharge",
-    "pages/photo-restoration/photo-restoration"
+    "pages/photo-restoration/photo-restoration",
+    "pages/user-agreement/user-agreement",
+    "pages/privacy-policy/privacy-policy"
   ],
   "window": {
     "navigationBarTextStyle": "black",

@@ -1,0 +1,9 @@
+<view class="container">
+  <scroll-view class="content" scroll-y="true">
+    <text class="title">用户协议</text>
+    <text class="content-text">{{agreementContent}}</text>
+  </scroll-view>
+  <view class="footer">
+    <button class="back-btn" bindtap="onBack">返回</button>
+  </view>
+</view>

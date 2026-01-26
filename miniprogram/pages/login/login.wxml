@@ -6,15 +6,28 @@
   </view>
   
   <view class="wechat-login">
+    <view class="agreement-section">
+      <checkbox-group bindchange="onAgreementChange">
+        <label class="checkbox-label">
+          <checkbox value="agree" checked="{{agreed}}" />
+          <text class="agreement-text">
+            我已阅读并同意
+            <text class="link" bindtap="navigateToUserAgreement">《用户协议》</text>
+            和
+            <text class="link" bindtap="navigateToPrivacyPolicy">《隐私声明》</text>
+          </text>
+        </label>
+      </checkbox-group>
+    </view>
     <button 
       class="wechat-btn" 
       open-type="getUserInfo" 
       bind:getuserinfo="onWechatLogin" 
       loading="{{loading}}"
+      disabled="{{!agreed}}"
     >
       <image class="wechat-icon" src="/images/wechat-logo.svg"></image>
       <text>微信一键登录</text>
     </button>
-    <text class="tips">登录即表示您同意《用户协议》和《隐私政策》</text>
   </view>
 </view>

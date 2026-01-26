@@ -1,0 +1,9 @@
+<view class="container">
+  <scroll-view class="content" scroll-y="true">
+    <text class="title">隐私声明</text>
+    <text class="content-text">{{policyContent}}</text>
+  </scroll-view>
+  <view class="footer">
+    <button class="back-btn" bindtap="onBack">返回</button>
+  </view>
+</view>
