@@ -1,11 +1,11 @@
 <!--index.wxml-->
 <view class="container">
   <view class="header">
-    <view class="user-info">
+    <view class="user-info" bindtap="onLogin">
       <image class="avatar" src="{{userAvatar || '/images/avatar-placeholder.svg'}}"></image>
-      <text class="welcome">欢迎，{{username || '微信用户'}}</text>
+      <text class="welcome">{{username === '未登录' ? '点击登录' : '欢迎，' + (username || '微信用户')}}</text>
     </view>
-    <button class="logout-btn" bindtap="onLogout">退出登录</button>
+    <button class="logout-btn" bindtap="onLogout" wx:if="{{username !== '未登录'}}">退出登录</button>
   </view>
   <view class="main-content">
     <button class="vertical-button doubao-button" bindtap="onDoubaoRemoveWatermark">豆包出图去水印</button>

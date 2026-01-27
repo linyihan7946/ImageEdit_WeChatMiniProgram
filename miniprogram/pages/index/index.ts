@@ -289,6 +289,17 @@ Component({
         }
       });
     },
+
+    // 登录按钮点击事件
+    onLogin() {
+      const token = wx.getStorageSync('userToken');
+      if (!token) {
+        // 未登录时跳转到登录页面
+        wx.redirectTo({
+          url: '/pages/login/login'
+        });
+      }
+    },
     
     // 获取cos的授权按钮点击事件
     onTest() {
