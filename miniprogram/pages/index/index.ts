@@ -18,8 +18,8 @@ Component({
   
   lifetimes: {
     attached() {
-      // 组件挂载时检查登录状态并获取用户信息
-      this.checkLoginStatus();
+      // 组件挂载时获取用户信息（如果已登录）
+      this.checkLoginStatus(false);
       // 获取并显示剩余编辑次数
       this.updateRemainingCount();
     }
@@ -58,13 +58,22 @@ Component({
     // 更新剩余编辑次数并显示
     async updateRemainingCount() {
       try {
-        const todayUsage = await dbUtils.getUserDailyUsage();
-        const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
-        const remainingCount = GLOBAL_CONFIG.freeEditCount + purchasedCount - todayUsage;
-        console.log('更新剩余次数显示:', remainingCount);
-        this.setData({
-          remainingCount: Math.max(0, remainingCount)
-        });
+        const token = wx.getStorageSync('userToken');
+        if (token) {
+          // 已登录时获取实际使用次数
+          const todayUsage = await dbUtils.getUserDailyUsage();
+          const purchasedCount = wx.getStorageSync('purchasedCount') || 0;
+          const remainingCount = GLOBAL_CONFIG.freeEditCount + purchasedCount - todayUsage;
+          console.log('更新剩余次数显示:', remainingCount);
+          this.setData({
+            remainingCount: Math.max(0, remainingCount)
+          });
+        } else {
+          // 未登录时显示默认剩余次数
+          this.setData({
+            remainingCount: GLOBAL_CONFIG.freeEditCount
+          });
+        }
       } catch (error) {
         console.error('更新剩余次数失败:', error);
         // 发生错误时默认显示最大值
@@ -216,16 +225,25 @@ Component({
     },
     
     // 检查登录状态并获取用户信息
-    checkLoginStatus(): boolean {
+    checkLoginStatus(forceLogin: boolean = true): boolean {
       const token = wx.getStorageSync('userToken');
       const userInfo = wx.getStorageSync('userInfo');
       
       if (!token) {
-        // 如果没有登录，跳转到登录页面
-        wx.redirectTo({
-          url: '/pages/login/login'
-        });
-        return false;
+        // 如果没有登录，根据forceLogin参数决定是否强制跳转
+        if (forceLogin) {
+          wx.redirectTo({
+            url: '/pages/login/login'
+          });
+          return false;
+        } else {
+          // 未登录但不强制跳转，显示未登录状态
+          this.setData({
+            username: '未登录',
+            userAvatar: ''
+          });
+          return false;
+        }
       }
       
       // 更新用户信息
