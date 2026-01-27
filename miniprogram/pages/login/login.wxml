@@ -7,19 +7,17 @@
   
   <view class="wechat-login">
     <view class="agreement-section">
-      <view class="checkbox-label">
-        <checkbox-group bindchange="onAgreementChange">
-          <label>
-            <checkbox value="agree" checked="{{agreed}}" />
-          </label>
-        </checkbox-group>
-        <text class="agreement-text">
-          我已阅读并同意
-          <text class="link" bindtap="navigateToUserAgreement">《用户协议》</text>
-          和
-          <text class="link" bindtap="navigateToPrivacyPolicy">《隐私声明》</text>
-        </text>
-      </view>
+      <checkbox-group class="checkbox-label" bindchange="onAgreementChange">
+        <label class="checkbox-label">
+          <checkbox value="agree" checked="{{agreed}}" />
+          <view class="agreement-text">
+            我已阅读并同意
+            <text class="link" catchtap="navigateToUserAgreement">《用户协议》</text>
+            和
+            <text class="link" catchtap="navigateToPrivacyPolicy">《隐私声明》</text>
+          </view>
+        </label>
+      </checkbox-group>
     </view>
     <button 
       class="wechat-btn" 

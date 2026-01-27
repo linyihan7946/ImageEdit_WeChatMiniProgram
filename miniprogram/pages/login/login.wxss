@@ -42,13 +42,16 @@ page {
 .agreement-section {
   width: 100%;
   margin-bottom: 30rpx;
-  padding: 0 20rpx;
+  padding: 0; 
+  display: flex;
+  justify-content: center;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  justify-content: center; /* 居中对齐 */
+  width: 100%;
 }
 
 .checkbox-group {
@@ -57,17 +60,16 @@ page {
 }
 
 checkbox {
-  transform: scale(1.2);
+  transform: scale(0.7); /* 缩放比例过大会挤压文字空间，建议减小 */
+  margin-right: 8rpx;
 }
 
 .agreement-text {
   font-size: 24rpx;
   color: #666;
-  line-height: 36rpx;
-  flex-shrink: 1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex; /* 使用 flex 让内部 text 元素水平排布 */
+  align-items: center;
 }
 
 .link {
